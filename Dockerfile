@@ -24,7 +24,7 @@ RUN chmod 0700 /root/.ssh
 VOLUME ["/root/.ssh"]
 
 #Install Varnish
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get clean && apt-get update && apt-get upgrade -y
 RUN apt-get install -qy varnish
 
 # Varnish configuration variables
@@ -76,4 +76,4 @@ RUN chmod 777 ~/varnish-start.sh
 
 EXPOSE 8080 8088
 
-CMD apache2-foreground && ~/kricker-d7-start.sh && ~/varnish-start.sh
+CMD apache2-foreground && sh ~/kricker-d7-start.sh && sh ~/varnish-start.sh
