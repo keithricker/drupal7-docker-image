@@ -15,7 +15,7 @@ ENV MAKE_GIT_BRANCH
 ENV PRIVATE_KEY_FILE root-aws-key.pem
 
 # User can specify any additional commands to insert in the startup script
-ENV ADDITIONAL_COMMAND
+# ENV ADDITIONAL_COMMAND
 
 # public key goes here
 RUN if [ ! -d "/root/.ssh" ]; then mkdir /root/.ssh; fi
