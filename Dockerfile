@@ -14,6 +14,7 @@ RUN apt-get install -qy varnish
 RUN apt-get install -y libmemcached-dev libmemcached11 git build-essential
 RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached
 RUN cd php-memcached
+RUN echo $(ls)
 RUN echo $(find  / -name "phpize" -ls)
 RUN /usr/local/bin/phpize
 RUN ./configure --with-php-config=/usr/local/bin/php-config
