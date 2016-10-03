@@ -9,3 +9,8 @@ RUN chmod 0700 /root/.ssh
 #Install Varnish
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -qy varnish
+
+# Memcache Installation
+RUN apt-get install -y memcached
+RUN apt-get install -y php-memcached memcache
+RUN memcached restart 2> /dev/null
