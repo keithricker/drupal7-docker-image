@@ -12,5 +12,12 @@ RUN apt-get install -qy varnish
 
 # Memcache Installation
 RUN apt-get install -y memcached
-RUN apt-get install -y php-memcached memcache
+RUN apt-get install -y php-memcached
 RUN memcached restart 2> /dev/null
+
+# Install Apache Solr
+RUN apt-get -y install openjdk-8-jdk
+RUN mkdir /usr/java
+RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/java/default
+RUN apt-get -y install solr-tomcat
+# Solr configuration can be done by visiting: localhost:8080/solr
