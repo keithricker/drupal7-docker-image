@@ -69,11 +69,11 @@ RUN apt-get -y install solr-tomcat
 RUN $(echo find / -name "solr" -ls)
 
 # Add startup scripts
-COPY config/kricker-d7-start.sh ~/kricker-d7-start.sh
-COPY config/varnish/start.sh ~/varnish-start.sh
-RUN chmod 777 ~/kricker-d7-start.sh
-RUN chmod 777 ~/varnish-start.sh
+COPY config/kricker-d7-start.sh /root/kricker-d7-start.sh
+COPY config/varnish/start.sh /root/varnish-start.sh
+RUN chmod 777 /root/kricker-d7-start.sh
+RUN chmod 777 /root/varnish-start.sh
 
 EXPOSE 8080 8088
 
-CMD apache2-foreground && sh ~/kricker-d7-start.sh && sh ~/varnish-start.sh
+CMD apache2-foreground && sh /root/kricker-d7-start.sh && sh /root/varnish-start.sh
