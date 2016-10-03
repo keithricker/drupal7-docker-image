@@ -47,15 +47,11 @@ RUN $(echo ls /etc); exit 0
 # VOLUME ["/etc/varnish"]
 
 # Memcache Installation
-RUN apt-get install -y libmemcached-dev libmemcached11 git build-essential
-RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached
-WORKDIR /root/php-memcached
-RUN phpize
-RUN ./configure --with-php-config=/usr/local/bin/php-config
-RUN make
-RUN make install
-WORKDIR /root
-RUN rm -r php-memcached
+RUN apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential
+ENV PHPDIR /usr/local/lib/php
+RUN exstdir=$(find ${PHPDIR}/extensions -type d -iname no-debug-non-zts-\*) && \
+    git clone -b php7 https://github.com/php-memcached-dev/php-memcached ${extdir}/memcached &&\
+    docker-php-ext-install memcached
 
 # Install Apache Solr
 RUN apt-get -y install openjdk-7-jre 
