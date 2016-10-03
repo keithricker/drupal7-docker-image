@@ -9,7 +9,7 @@ ENV SITEROOT /var/www/html
 
 # If user would like to create a new git branch from the contents of the public html directory,
 # then specify the name of the new branch.
-ENV MAKE_GIT_BRANCH
+# ENV MAKE_GIT_BRANCH
 
 # For passing in private key with environment variable
 ENV PRIVATE_KEY_FILE root-aws-key.pem
