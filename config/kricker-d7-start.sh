@@ -36,8 +36,9 @@ then
         git checkout -b ${gitbranchname} || true
         git push origin ${gitbranchname} || true;
     fi
-    mv moveme/.* ${SITEROOT}/
-    mv moveme/* ${SITEROOT}/
+    rm -r ${SITEROOT}/* ${SITEROOT}/.* 2> /dev/null
+    mv moveme/.* ${SITEROOT}/ 2> /dev/null
+    mv moveme/* ${SITEROOT}/ 2> /dev/null
     rm -r moveme;
     chown -R www-data:www-data ${SITEROOT}/sites
 fi
