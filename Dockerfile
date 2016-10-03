@@ -2,6 +2,8 @@
 
 FROM drupal:7
 
+WORKDIR ~/
+
 # public key goes here
 RUN if [ ! -d "/root/.ssh" ]; then mkdir /root/.ssh; fi
 RUN chmod 0700 /root/.ssh
@@ -13,14 +15,13 @@ RUN apt-get install -qy varnish
 # Memcache Installation
 RUN apt-get install -y libmemcached-dev libmemcached11 git build-essential
 RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached
-RUN cd php-memcached
-RUN echo $(ls)
-RUN echo $(find  / -name "phpize" -ls)
-RUN /usr/local/bin/phpize
+WORKDIR ~/php-memcached
+RUN phpize
 RUN ./configure --with-php-config=/usr/local/bin/php-config
 RUN make
 RUN make install
-RUN cd ../ && rm -r php-memcached
+WORKDIR ~/
+RUN rm -r php-memcached
 RUN memcached restart 2> /dev/null
 
 # Install Apache Solr
