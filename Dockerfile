@@ -35,8 +35,9 @@ WORKDIR /root
 RUN rm -r php-memcached
 
 # Install Apache Solr
-RUN apt-get -y install openjdk-8-jdk
+RUN apt-get -y install openjdk-7-jre 
+RUN apt-get -y install openjdk-7-jdk
 RUN mkdir /usr/java
-RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/java/default
+RUN ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
 RUN apt-get -y install solr-tomcat
 # Solr configuration can be done by visiting: localhost:8080/solr
