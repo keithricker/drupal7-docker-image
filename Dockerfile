@@ -2,8 +2,7 @@
 
 FROM drupal:7
 
-WORKDIR ~/
-RUN cd ~/
+WORKDIR /root
 RUN echo $PWD
 
 # public key goes here
@@ -17,13 +16,13 @@ RUN apt-get install -qy varnish
 # Memcache Installation
 RUN apt-get install -y libmemcached-dev libmemcached11 git build-essential
 RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached
-WORKDIR ~/php-memcached
+WORKDIR /root/php-memcached
 RUN echo $PWD
 RUN phpize
 RUN ./configure --with-php-config=/usr/local/bin/php-config
 RUN make
 RUN make install
-WORKDIR ~/
+WORKDIR /root
 RUN echo $PWD
 RUN rm -r php-memcached
 RUN memcached restart 2> /dev/null
