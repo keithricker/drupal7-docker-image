@@ -11,8 +11,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -qy varnish
 
 # Memcache Installation
-RUN apt-get install -y memcached
-RUN apt-get install -y php-memcached
+RUN apt-get install -y php7.0-memcached
 RUN memcached restart 2> /dev/null
 
 # Install Apache Solr
