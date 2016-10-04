@@ -2,6 +2,9 @@
 
 FROM drupal:7
 
+WORKDIR /var/www
+RUN find html -mindepth 1 -delete
+RUN ls /var/www/html
 WORKDIR /root
 
 # Server's public html
