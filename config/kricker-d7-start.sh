@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Start memcache
-/usr/bin/memcached -u memcache -v & service memcached start &
+service memcached start &
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
