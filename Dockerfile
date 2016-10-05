@@ -67,14 +67,15 @@ RUN $(echo find / -name "solr" -ls)
 WORKDIR /root
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
-
-# Install Drush 7.
-RUN composer global require drush/drush:7.*
-RUN composer update
 RUN mv composer.json .composer/composer.json
 RUN mv composer.lock .composer/composer.lock
 RUN mv vendor .composer/vendor
 
+# Install Drush 7.
+RUN composer global require drush/drush:7.*
+WORKDIR /root/.composer
+RUN composer update
+WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 
 # Add startup scripts
@@ -82,6 +83,8 @@ COPY config/kricker-d7-start.sh /root/kricker-d7-start.sh
 COPY config/varnish/start.sh /root/varnish-start.sh
 RUN chmod 777 /root/kricker-d7-start.sh
 RUN chmod 777 /root/varnish-start.sh
+
+WORKDIR /var/www/html
 
 EXPOSE 8080 8088
 
