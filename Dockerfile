@@ -63,6 +63,20 @@ RUN apt-get -y install solr-tomcat
 # VOLUME ["/usr/share/solr"]
 RUN $(echo find / -name "solr" -ls)
 
+# Install composer
+WORKDIR /root
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+
+# Install Drush 7.
+RUN composer global require drush/drush:7.*
+RUN composer update
+RUN mv composer.json .composer/composer.json
+RUN mv composer.lock .composer/composer.lock
+RUN mv vendor .composer/vendor
+
+RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
+
 # Add startup scripts
 COPY config/kricker-d7-start.sh /root/kricker-d7-start.sh
 COPY config/varnish/start.sh /root/varnish-start.sh
