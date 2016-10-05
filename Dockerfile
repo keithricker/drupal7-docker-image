@@ -66,15 +66,12 @@ RUN $(echo find / -name "solr" -ls)
 # Install composer
 WORKDIR /root
 RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
-RUN mv composer.json .composer/composer.json
-RUN mv composer.lock .composer/composer.lock
-RUN mv vendor .composer/vendor
+RUN mv /root/composer.phar /usr/local/bin/composer
 
 # Install Drush 7.
-RUN composer global require drush/drush:7.*
 WORKDIR /root/.composer
-RUN composer update
+RUN composer global require drush/drush:7.*
+RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 
