@@ -183,3 +183,8 @@ then
     y=`eval $ADDITIONAL_COMMAND`
     echo $y;
 fi
+
+# Remove drush and composer
+rm /usr/bin/drush || true
+rm -r /root/.composer || true
+rm /usr/local/bin/composer || true
