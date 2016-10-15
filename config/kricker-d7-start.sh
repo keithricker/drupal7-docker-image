@@ -52,7 +52,7 @@ dbport=3306
 DRUPAL_SITE_DIR=${SITEROOT}/sites
 DRUPAL_FILES_DIR=${SITEROOT}/sites/default/files
 DRUPAL_PRIVATE_DIR=${SITEROOT}/sites/default/files/private
-DRUPAL_TEMP_DIR=${SITEROOT}/tmp
+DRUPAL_TMP_DIR=${SITEROOT}/tmp
 
 if [ "${DRUPAL_SITENAME}" != "" ]
 then 
@@ -76,7 +76,7 @@ then
 fi
 
 # clone the repo if it exists and we havent already downloaded drupal
-if [ "{downloaded_drupal}" != "" ]
+if [ "{downloaded_drupal}" == "" ]
 then
   # start by deleting any existing code
   cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
