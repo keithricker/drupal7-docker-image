@@ -2,6 +2,7 @@
 
 # Start memcache
 service memcached start &
+sh /root/varnish-start.sh &
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
