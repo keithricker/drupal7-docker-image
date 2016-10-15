@@ -25,13 +25,18 @@ RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /roo
 VOLUME ["/root/.ssh_copy"]
 
 #Install Varnish
-RUN apt-get clean && apt-get update && apt-get upgrade -y
-RUN apt-get install -qy varnish
+ENV VARNISH_VERSION 4.0
+RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
+	echo "deb http://repo.varnish-cache.org/debian/ jessie varnish-${VARNISH_VERSION}" >> /etc/apt/sources.list.d/varnish-cache.list && \
+	apt-get update && \
+	apt-get install -yq varnish
 
 # Varnish configuration variables
 ENV VARNISH_BACKEND_PORT 8088
 ENV VARNISH_BACKEND_IP 0.0.0.0
 ENV VARNISH_PORT 80
+ENV VARNISH_CONTENT -b backend:$VARNISH_BACKEND_PORT
+ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
 
 # Varnish configuration
 ADD config/varnish/default.vcl /etc/varnish/default.vcl
