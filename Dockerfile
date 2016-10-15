@@ -18,10 +18,11 @@ ENV PRIVATE_KEY_FILE root-aws-key.pem
 # ENV ADDITIONAL_COMMAND
 
 # public key goes here
-RUN if [ ! -d "/root/.ssh" ]; then mkdir /root/.ssh; fi
-RUN chmod 0700 /root/.ssh
+RUN if [ ! -d "/root/.ssh" ]; then mkdir /root/.ssh && chmod 0700 /root/.ssh; fi
+RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /root/.ssh_copy; fi
+
 # For sharing ssh key from host to container
-VOLUME ["/root/.ssh"]
+VOLUME ["/root/.ssh_copy"]
 
 #Install Varnish
 RUN apt-get clean && apt-get update && apt-get upgrade -y
