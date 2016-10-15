@@ -13,6 +13,8 @@ then
     sed -i 's/\\n/\
 /g' ~/.ssh/${PRIVATE_KEY_FILE}
     chmod 600  ~/.ssh/${PRIVATE_KEY_FILE}
+else
+    cp -a ~/.ssh_copy/. ~/.ssh/ && chown -R root:root ~/.ssh ~/.ssh/*
 fi
 
 #If there is already existing code and no git repo is defined, then exit out
