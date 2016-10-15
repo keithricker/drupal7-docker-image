@@ -19,6 +19,7 @@ fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [[ -f "${SITEROOT}/sites/default/settings.php" && "${GIT_REPO}" == "" ]]
+then
   echo "Code already exists. All set here."
   exit 0
 fi
