@@ -131,7 +131,9 @@ fi
 if [ "${dir}" != "default" ]
 then
   var=$dir
-  dbname=${var//.}
+  nodot=${var//.}
+  nouscore=${nodot//_}
+  dbname = nouscore
   drupalsitename=drupalsitename-${dbname}
 fi
 
