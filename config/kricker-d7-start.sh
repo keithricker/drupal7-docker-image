@@ -14,12 +14,25 @@ then
     chmod 600  ~/.ssh/${PRIVATE_KEY_FILE}
 fi
 
+#If there is already existing code and no git repo is defined, then exit out
+if [[ -f "${SITEROOT}/index.php" && "${GIT_REPO}" == "" ]]
+  echo "Code already exists. All set here."
+  exit 0
+fi
+
 # If git repo environment variable is defined, then clone from that repo.
 if [ "${GIT_REPO}" != "" ]
 then 
-  echo "Cloning git repo ${GIT_REPO}"
-else 
-  exit 0
+   echo "Cloning git repo ${GIT_REPO}"
+else
+   cd ${SITEROOT}
+   echo "Downloading Drupal."
+   curl -fSL "https://ftp.drupal.org/files/projects/drupal-${DRUPAL_VERSION}.tar.gz" -o drupal.tar.gz
+   tar -xz --strip-components=1 -f drupal.tar.gz
+   rm drupal.tar.gz
+   chown -R www-data:www-data sites
+   downloaded_drupal=true
+   echo "Drupal downloaded to site root directory."
 fi
 
 # Defnie a few variables
@@ -58,17 +71,21 @@ then
   dbport=$MYSQL_PORT_3306_TCP_PORT
 fi
 
-# clone the repo
-# start by deleting any existing code
-cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
-git config --global --unset https.proxy && git config --global --unset http.proxy
-git clone $(echo ${gitrepo}) .
-# Allow for creating a new branch if specified in the configuration or docker run command.
-if [ "$MAKE_GIT_BRANCH" != "" ]; 
+# clone the repo if it exists and we havent already downloaded drupal
+if [ "{downloaded_drupal}" != "" ]
 then
-  git checkout -b ${MAKE_GIT_BRANCH} || true
-  git push origin ${MAKE_GIT_BRANCH} || true;
+  # start by deleting any existing code
+  cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
+  git config --global --unset https.proxy && git config --global --unset http.proxy
+  git clone $(echo ${gitrepo}) .
+  # Allow for creating a new branch if specified in the configuration or docker run command.
+  if [ "$MAKE_GIT_BRANCH" != "" ]; 
+  then
+    git checkout -b ${MAKE_GIT_BRANCH} || true
+    git push origin ${MAKE_GIT_BRANCH} || true;
+  fi
 fi
+cd ${SITEROOT}
 
 # create some directories
 if [ ! -d "${DRUPAL_TMP_DIR}" ]
@@ -136,6 +153,9 @@ then
   echo
   continue
 fi
+
+# Install backup and migrate
+drush en backup_migrate -y
 
 #
 # If the repo came with a settings.php file then we'll create a local.settings.php file to be included with 
