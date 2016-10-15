@@ -76,7 +76,7 @@ then
 fi
 
 # clone the repo if it exists and we havent already downloaded drupal
-if [ "{downloaded_drupal}" == "" ]
+if [ "${downloaded_drupal}" == "" ]
 then
   # start by deleting any existing code
   cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
@@ -119,7 +119,7 @@ dir=${dir##*/}
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
 # break out if site is configured already or we're in sites/all
-if [ "$dir" == "all" ]
+if [ "${dir}" === "all" ]
 then
   continue
 fi
@@ -128,10 +128,10 @@ then
   echo "Drupal is already configured in ${DRUPAL_SITE_DIR}/$dir. Delete local.settings.php to rerun setup"
   continue
 fi
-if [ "$dir" != "default" ]
+if [ "${dir}" != "default" ]
 then
   var=$dir
-  dbname=${var//./}
+  dbname=${var//.}
   drupalsitename=drupalsitename-${dbname}
 fi
 
