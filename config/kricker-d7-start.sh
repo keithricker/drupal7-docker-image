@@ -18,28 +18,51 @@ else
 fi
 
 #If there is already existing code and no git repo is defined, then exit out
-if [[ -f "${SITEROOT}/sites/default/settings.php" && "${GIT_REPO}" == "" ]]
-then
-  echo "Code already exists. All set here."
-  exit 0
-fi
+if [[ -f "${SITEROOT}/modules/node.module" ]]; then drupal_filess_exist=true; fi
+if [[ -f "${SITEROOT}/sites/default/settings.php" ]]; then drupal_already_configured=true; fi
+if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
-# If git repo environment variable is defined, then clone from that repo.
-if [ "${GIT_REPO}" != "" ]
+# Yes this is more code than necessary but it makes things esier to follow along with.
+if "$drupal_already_configured" && ! "$git_repo_exists" then move_along=true;
+if "$drupal_files_exist" && "$git_repo_exists"; then pull_from_git=true; fi
+if ! "$drupal_files_exist" && "$git_repo_exists"; then clone_from_git=true; fi
+if ! "$drupalfilesexist" && ! "$git_repo_exists"; then download_drupal_from_scratch=true; fi
+
+#If there is already existing code and no git repo is defined, then exit out
+if "$move_along"; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
+
+# If we're downloading drupal from scratch, then set our variables to specify the source and version.
+if "$download_drupal_from_scratch"
 then 
-   echo "Cloning git repo ${GIT_REPO}"
-else
-   cd ${SITEROOT}
-   echo "Downloading Drupal."
-   curl -fSL "https://ftp.drupal.org/files/projects/drupal-${DRUPAL_VERSION}.tar.gz" -o drupal.tar.gz
-   tar -xz --strip-components=1 -f drupal.tar.gz
-   rm drupal.tar.gz
-   chown -R www-data:www-data sites
-   downloaded_drupal=true
-   echo "Drupal downloaded to site root directory."
+    git_repo_exists=true
+    clone_from_git=true
+    GIT_REPO="${DRUPAL_SOURCE}"
+    GIT_BRANCH="${DRUPAL_SOURCE_VERSION}"
 fi
 
-# Defnie a few variables
+# If git repo environment variable is defined and there is no existing code, then clone from that repo.
+if "$git_repo_exists"; then git config --global --unset https.proxy && git config --global --unset http.proxy; fi
+
+# clone the repo if it exists and we havent already downloaded drupal
+if "$clone_from_git"
+then
+  # start by deleting any existing code, then clone
+  cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
+  git clone -b ${GIT_BRANCH} ${gitrepo} .
+fi
+# Otherwise if code exists, then we assume we are pulling instead.
+if "$pull_from_git"; then cd ${SITEROOT} && git pull ${gitrepo} origin ${GIT_BRANCH} || true; fi
+
+# Allow for creating a new branch if specified in the configuration or docker run command.
+if "$MAKE_GIT_BRANCH"
+then
+   git checkout -b ${MAKE_GIT_BRANCH} || true
+   git push origin ${MAKE_GIT_BRANCH} || true;
+fi
+
+cd ${SITEROOT}
+
+# Time now to install drupa. First, we'll defnie a few variables
 drupalprofile=minimal
 drupalsitename=drupal7
 adminpass=drupal
@@ -48,48 +71,17 @@ dbhost=database
 dbuname=drupal
 dbpass=drupal
 dbport=3306
+# We'll over-ride the defaults if environment variables are defining them.
+if [ "${DRUPAL_SITENAME}" != "" ]; then drupalsitename="${DRUPAL_SITENAME}"; fi
+if [ "$MYSQL_ENV_MYSQL_DATABASE" != "" ]; then dbname=$MYSQL_ENV_MYSQL_DATABASE; fi
+if [ "$MYSQL_ENV_MYSQL_USER" != "" ]; then dbuname=$MYSQL_ENV_MYSQL_USER; fi
+if [ "$MYSQL_ENV_MYSQL_USER" != "" ]; then dbpass=$MYSQL_ENV_MYSQL_PASSWORD; fi
+if [ "$MYSQL_PORT_3306_TCP_PORT" != "" ]; then dbport=$MYSQL_PORT_3306_TCP_PORT; fi
 
 DRUPAL_SITE_DIR=${SITEROOT}/sites
 DRUPAL_FILES_DIR=${SITEROOT}/sites/default/files
 DRUPAL_PRIVATE_DIR=${SITEROOT}/sites/default/files/private
 DRUPAL_TMP_DIR=${SITEROOT}/tmp
-
-if [ "${DRUPAL_SITENAME}" != "" ]
-then 
-  drupalsitename="${DRUPAL_SITENAME}"
-fi
-if [ "$MYSQL_ENV_MYSQL_DATABASE" != "" ]
-then
-  dbname=$MYSQL_ENV_MYSQL_DATABASE
-fi
-if [ "$MYSQL_ENV_MYSQL_USER" != "" ]
-then
-  dbuname=$MYSQL_ENV_MYSQL_USER
-fi
-if [ "$MYSQL_ENV_MYSQL_USER" != "" ]
-then
-  dbpass=$MYSQL_ENV_MYSQL_PASSWORD
-fi
-if [ "$MYSQL_PORT_3306_TCP_PORT" != "" ]
-then
-  dbport=$MYSQL_PORT_3306_TCP_PORT
-fi
-
-# clone the repo if it exists and we havent already downloaded drupal
-if [ "${downloaded_drupal}" == "" ]
-then
-  # start by deleting any existing code
-  cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
-  git config --global --unset https.proxy && git config --global --unset http.proxy
-  git clone $(echo ${gitrepo}) .
-  # Allow for creating a new branch if specified in the configuration or docker run command.
-  if [ "$MAKE_GIT_BRANCH" != "" ]; 
-  then
-    git checkout -b ${MAKE_GIT_BRANCH} || true
-    git push origin ${MAKE_GIT_BRANCH} || true;
-  fi
-fi
-cd ${SITEROOT}
 
 # create some directories
 if [ ! -d "${DRUPAL_TMP_DIR}" ]
@@ -140,11 +132,8 @@ fi
 # Install the site
 # Drush won't install the site if there is an existing settings.php file. So we'll do this as a work-around
 #
-if [ -f "${DRUPAL_SETTINGS}" ] 
-then
-  mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.bak
-fi
-
+cd ${DRUPAL_SITE_DIR}/$dir
+if [ -f "${DRUPAL_SETTINGS}" ]; then mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.bak; fi
 echo
 echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
 echo
@@ -199,6 +188,8 @@ echo
 echo "Don't forget to change your drupal admin password!"
 echo
 done;
+
+cd ${SITEROOT}
 
 # Additional commands can be added by an environment variable
 echo "Checking for additional command ... "
