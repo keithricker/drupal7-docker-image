@@ -10,11 +10,13 @@ ENV SITEROOT /var/www/html
 # If git repo and/or branch are specified then we can use them for pulling/cloning codebase
 ENV GIT_REPO false
 ENV GIT_BRANCH master
+# If project is under version control and user would like to create a new git branch from their code base,
+# then specify the name of the new branch to create.
 ENV MAKE_GIT_BRANCH false
 
-# If user would like to create a new git branch from the contents of the public html directory,
-# then specify the name of the new branch.
-# ENV MAKE_GIT_BRANCH
+# Source for downloading fresh drupal sourcecode - this will be used by default.
+ENV DRUPAL_SOURCE https://github.com/drupal/drupal.git
+ENV DRUPAL_VERSION 7.x
 
 # For passing in private key with environment variable
 ENV PRIVATE_KEY_FILE root-aws-key.pem
