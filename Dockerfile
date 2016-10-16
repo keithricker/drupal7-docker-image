@@ -33,7 +33,7 @@ RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
 
 # Varnish configuration variables
 ENV VARNISH_BACKEND_PORT 8088
-ENV VARNISH_BACKEND_IP 0.0.0.0
+ENV VARNISH_BACKEND_IP 127.0.0.1
 ENV VARNISH_LISTEN_PORT 80
 ENV VARNISH_CONTENT -f /etc/varnish/default.vcl
 ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
