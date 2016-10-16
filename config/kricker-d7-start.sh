@@ -160,7 +160,7 @@ then
 fi
 
 # Install backup and migrate
-drush en backup_migrate -y
+drush en backup_migrate -y || true
 
 #
 # If the repo came with a settings.php file then we'll create a local.settings.php file to be included with 
