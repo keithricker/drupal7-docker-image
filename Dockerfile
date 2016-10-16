@@ -89,4 +89,4 @@ WORKDIR /var/www/html
 
 EXPOSE 8080 8088
 
-CMD apache2-foreground && sh /root/drupal-start.sh
+CMD apache2-foreground && bash /root/drupal-start.sh
