@@ -59,7 +59,7 @@ ADD config/varnish/default.vcl /etc/varnish/default.vcl
 # VOLUME ["/etc/varnish"]
 
 # Memcache Installation
-RUN apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential
+RUN apt-get update && apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential || true
 ENV PHP_EXT_DIR /usr/src/php/ext
 RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached &&\
     docker-php-ext-install memcached
