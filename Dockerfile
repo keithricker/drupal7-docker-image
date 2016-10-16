@@ -32,11 +32,12 @@ RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /roo
 VOLUME ["/root/.ssh_copy"]
 
 #Install Varnish
-ENV VARNISH_VERSION 4.0
-RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
-	echo "deb http://repo.varnish-cache.org/debian/ jessie varnish-${VARNISH_VERSION}" >> /etc/apt/sources.list.d/varnish-cache.list && \
-	apt-get update && \
-	apt-get install -yq varnish
+# Uncommenting for now until I can get it to work properly
+# ENV VARNISH_VERSION 4.0
+# RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
+#	echo "deb http://repo.varnish-cache.org/debian/ jessie varnish-${VARNISH_VERSION}" >> /etc/apt/sources.list.d/varnish-cache.list && \
+#	apt-get update && \
+#	apt-get install -yq varnish
 
 # Varnish configuration variables
 ENV VARNISH_BACKEND_PORT 8088
@@ -49,13 +50,13 @@ ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
 ADD config/varnish/default.vcl /etc/varnish/default.vcl
 
 # Modify existing Apache2 configuration to give port 80 over to varnish
-RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
-RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/default-ssl.conf
-RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/000-default.conf
+# RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
+# RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/default-ssl.conf
+# RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/000-default.conf
 
 # Add configuration volumes for varnish
-VOLUME ["/var/lib/varnish"]
-VOLUME ["/etc/varnish"]
+# VOLUME ["/var/lib/varnish"]
+# VOLUME ["/etc/varnish"]
 
 # Memcache Installation
 RUN apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential
@@ -72,7 +73,6 @@ RUN apt-get -y install solr-tomcat
 # Solr configuration can be done by visiting: localhost:8080/solr
 # Add configuration volume for solr
 VOLUME ["/usr/share/solr"]
-RUN $(echo find / -name "solr" -ls)
 
 # Install composer
 WORKDIR /root
