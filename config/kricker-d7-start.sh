@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Start memcache
-nohup killall memcached && service memcached start
-nohup bash /root/varnish-start.sh
+nohup killall memcached & service memcached start || true
+nohup bash /root/varnish-start.sh || true
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
