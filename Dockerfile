@@ -7,6 +7,11 @@ WORKDIR /root
 # Server's public html
 ENV SITEROOT /var/www/html
 
+# If git repo and/or branch are specified then we can use them for pulling/cloning codebase
+ENV GIT_REPO false
+ENV GIT_BRANCH master
+ENV MAKE_GIT_BRANCH false
+
 # If user would like to create a new git branch from the contents of the public html directory,
 # then specify the name of the new branch.
 # ENV MAKE_GIT_BRANCH
