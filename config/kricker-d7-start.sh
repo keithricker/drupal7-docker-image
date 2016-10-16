@@ -1,13 +1,14 @@
 #!/bin/sh
 
 # Start memcache
-service memcached start &
+service memcached start
 
 # Fix up the varnish config file because it doesn't seem to like variables.
+if [ "${VARNISH_BACKEND_IP}" != "" ]; then varnishbeip=${VARNISH_BACKEND_IP}; else varnishbeip=$(cat /etc/hostname); fi;
 sed -i -e “s/\${VARNISH_BACKEND_IP}/${VARNISH_BACKEND_IP}/g” /etc/varnish/default.vcl
 sed -i -e “s/\${VARNISH_BACKEND_PORT}/${VARNISH_BACKEND_PORT}/g” /etc/varnish/default.vcl
 
-bash /root/varnish-start.sh &
+bash /root/varnish-start.sh
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
