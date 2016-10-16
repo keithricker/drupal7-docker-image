@@ -2,7 +2,12 @@
 
 # Start memcache
 service memcached start &
-sh /root/varnish-start.sh &
+
+# Fix up the varnish config file because it doesn't seem to like variables.
+sed -i -e “s/\${VARNISH_BACKEND_IP}/${VARNISH_BACKEND_IP}/g” /etc/varnish/default.vcl
+sed -i -e “s/\${VARNISH_BACKEND_PORT}/${VARNISH_BACKEND_PORT}/g” /etc/varnish/default.vcl
+
+bash /root/varnish-start.sh &
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
@@ -118,11 +123,10 @@ dir=${dir%*/}
 dir=${dir##*/}
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
+
 # break out if site is configured already or we're in sites/all
-if [ "${dir}" === "all" ]
-then
-  continue
-fi
+if [ "$dir" == "all" ]; then continue; fi;
+
 if [ -f "${DRUPAL_SITE_DIR}/$dir/local.settings.php" ]
 then
   echo "Drupal is already configured in ${DRUPAL_SITE_DIR}/$dir. Delete local.settings.php to rerun setup"
@@ -214,3 +218,5 @@ fi
 rm /usr/bin/drush || true
 rm -r /root/.composer || true
 rm /usr/local/bin/composer || true
+
+exit 0;
