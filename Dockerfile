@@ -32,10 +32,11 @@ RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /roo
 VOLUME ["/root/.ssh_copy"]
 
 #For sharing config files between host and container
-COPY config /root/config
-RUN mkdir /root/config/apache && ln -s /usr/local/bin/apache2-foreground /root/config/apache/apache2-foreground
-RUN chmod -R 777 /root/config
-VOLUME ["/root/config"]
+COPY config /root/config && chmod -R 777 /root/config
+
+# Make a shared directory for sharing configs with host
+RUN mkdir /root/config/share && chmod -R 777 /root/config/share
+VOLUME ["/root/config/share"]
 
 #Install Varnish
 # Uncommenting for now until I can get it to work properly
@@ -94,7 +95,6 @@ RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 RUN ln -s /root/.composer /root/config/composer
-RUN cp -r /root/config /root/config_copy
 
 WORKDIR /var/www/html
 
