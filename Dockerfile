@@ -52,8 +52,8 @@ ENV VARNISH_CONTENT -f /etc/varnish/default.vcl
 ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
 
 # Varnish configuration
-ADD config/varnish/default.vcl /etc/varnish/default.vcl
-RUN ln -s /etc/varnish/default.vcl /root/config/varnish/default.vcl
+COPY config/varnish/default.vcl /etc/varnish/default.vcl
+RUN rm -r /root/config/varnish && ln -s /etc/varnish /root/config/varnish || true
 
 # Modify existing Apache2 configuration to give port 80 over to varnish
 # RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
@@ -79,6 +79,7 @@ RUN apt-get -y install solr-tomcat
 # Solr configuration can be done by visiting: localhost:8080/solr
 # Add configuration volume for solr
 VOLUME ["/usr/share/solr"]
+RUN ln -s /usr/share/solr /root/config/solr
 
 # Install composer
 WORKDIR /root
@@ -91,6 +92,7 @@ RUN composer global require drush/drush:7.*
 RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
+RUN ln -s /root/.composer /root/config/composer
 
 WORKDIR /var/www/html
 
