@@ -94,6 +94,7 @@ RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 RUN ln -s /root/.composer /root/config/composer
+RUN cp /root/config /root/config_copy
 
 WORKDIR /var/www/html
 
