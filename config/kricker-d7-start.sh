@@ -23,42 +23,42 @@ if [ -f "${SITEROOT}/sites/default/settings.php" ]; then drupal_already_configur
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
 # Yes this is more code than necessary but it makes things esier to follow along with.
-if "$drupal_already_configured" && ! "$git_repo_exists"; then move_along=true; fi
-if "$drupal_files_exist" && "$git_repo_exists"; then pull_from_git=true; fi
-if ! "$drupal_files_exist" && "$git_repo_exists"; then clone_from_git=true; fi
-if ! "$drupal_files_exist" && ! "$git_repo_exists"; then download_drupal_from_scratch=true; fi
+if [[ "$drupal_already_configured" && ! "$git_repo_exists" ]]; then move_along=true; fi
+if [[ "$drupal_files_exist" && "$git_repo_exists" ]]; then pull_from_git=true; fi
+if [[ ! "$drupal_files_exist" && "$git_repo_exists" ]]; then clone_from_git=true; fi
+if [[ ! "$drupal_files_exist" && ! "$git_repo_exists" ]]; then download_drupal_from_scratch=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
-if "$move_along"; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
+if [ "$move_along" ]; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
 
 # If we're downloading drupal from scratch, then set our variables to specify the source and version.
-if "$download_drupal_from_scratch";
+if [ "$download_drupal_from_scratch" ]
 then 
     git_repo_exists=true
     clone_from_git=true
     GIT_REPO="${DRUPAL_SOURCE}"
-    GIT_BRANCH="${DRUPAL_SOURCE_VERSION}";
+    GIT_BRANCH="${DRUPAL_SOURCE_VERSION}"
 fi
 
 # If git repo environment variable is defined and there is no existing code, then clone from that repo.
-if "$git_repo_exists"; then git config --global --unset https.proxy && git config --global --unset http.proxy; fi
+if [ "$git_repo_exists" ]; then git config --global --unset https.proxy && git config --global --unset http.proxy; fi
 
 # clone the repo if it exists and we havent already downloaded drupal
-if "$clone_from_git";
+if [ "$clone_from_git" ]
 then
   # start by deleting any existing code, then clone
   cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
   git clone -b ${GIT_BRANCH} ${GIT_REPO} .
 fi
 # Otherwise if code exists, then we assume we are pulling instead.
-if "$pull_from_git"; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
+if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
 nohup echo "just ran the git pull command."
 
 # Allow for creating a new branch if specified in the configuration or docker run command.
-if "$MAKE_GIT_BRANCH";
+if [ "$MAKE_GIT_BRANCH" ]
 then
    git checkout -b ${MAKE_GIT_BRANCH} || true
-   git push origin ${MAKE_GIT_BRANCH} || true;
+   git push origin ${MAKE_GIT_BRANCH} || true
 fi
 
 cd ${SITEROOT}
