@@ -37,7 +37,7 @@ then
     git_repo_exists=true
     clone_from_git=true
     GIT_REPO="${DRUPAL_SOURCE}"
-    GIT_BRANCH="${DRUPAL_SOURCE_VERSION}"
+    GIT_BRANCH="${DRUPAL_VERSION}"
 fi
 
 # If git repo environment variable is defined and there is no existing code, then clone from that repo.
