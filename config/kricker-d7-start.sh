@@ -18,15 +18,15 @@ else
 fi
 
 #If there is already existing code and no git repo is defined, then exit out
-if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_filess_exist=true; fi
+if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
 if [ -f "${SITEROOT}/sites/default/settings.php" ]; then drupal_already_configured=true; fi
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
 # Yes this is more code than necessary but it makes things esier to follow along with.
-if "$drupal_already_configured" && ! "$git_repo_exists" then move_along=true;
+if "$drupal_already_configured" && ! "$git_repo_exists"; then move_along=true; fi
 if "$drupal_files_exist" && "$git_repo_exists"; then pull_from_git=true; fi
 if ! "$drupal_files_exist" && "$git_repo_exists"; then clone_from_git=true; fi
-if ! "$drupalfilesexist" && ! "$git_repo_exists"; then download_drupal_from_scratch=true; fi
+if ! "$drupal_files_exist" && ! "$git_repo_exists"; then download_drupal_from_scratch=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if "$move_along"; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
@@ -48,10 +48,10 @@ if "$clone_from_git";
 then
   # start by deleting any existing code, then clone
   cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
-  git clone -b ${GIT_BRANCH} ${gitrepo} .;
+  git clone -b ${GIT_BRANCH} ${GIT_REPO} .
 fi
 # Otherwise if code exists, then we assume we are pulling instead.
-if "$pull_from_git"; then cd ${SITEROOT} && git pull ${gitrepo} origin ${GIT_BRANCH} || true; fi
+if "$pull_from_git"; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
 nohup echo "just ran the git pull command."
 
 # Allow for creating a new branch if specified in the configuration or docker run command.
@@ -91,7 +91,7 @@ then
   chmod 775 ${DRUPAL_TMP_DIR}
   chown www-data:www-data ${DRUPAL_TMP_DIR}
 fi
-if [ ! -d "${DRUPAL_FIlES_DIR}" ]
+if [ ! -d "${DRUPAL_FILES_DIR}" ]
 then
   mkdir -p ${DRUPAL_FILES_DIR}
   chmod 775 ${DRUPAL_FILES_DIR}
@@ -125,7 +125,7 @@ then
   var=$dir
   nodot=${var//.}
   nouscore=${nodot//_}
-  dbname = nouscore
+  dbname=$nouscore
   drupalsitename=drupalsitename-${dbname}
 fi
 
@@ -204,5 +204,5 @@ fi
 
 # Remove drush and composer
 rm /usr/bin/drush || true
-rm -r /root/.composer || true
 rm /usr/local/bin/composer || true
+rm -r /root/.composer || true
