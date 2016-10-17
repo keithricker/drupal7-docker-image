@@ -31,6 +31,11 @@ RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /roo
 # For sharing ssh key from host to container
 VOLUME ["/root/.ssh_copy"]
 
+#For sharing config files between host and container
+COPY config /root/config
+RUN chmod -R 777 /root/config
+VOLUME ["/root/config"]
+
 #Install Varnish
 # Uncommenting for now until I can get it to work properly
 # ENV VARNISH_VERSION 4.0
@@ -48,6 +53,7 @@ ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
 
 # Varnish configuration
 ADD config/varnish/default.vcl /etc/varnish/default.vcl
+RUN ln -s /etc/varnish/default.vcl /root/config/varnish/default.vcl
 
 # Modify existing Apache2 configuration to give port 80 over to varnish
 # RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
@@ -85,12 +91,6 @@ RUN composer global require drush/drush:7.*
 RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
-
-# Add startup scripts
-COPY config/kricker-d7-start.sh /root/drupal-start.sh
-COPY config/varnish/start.sh /root/varnish-start.sh
-RUN chmod 777 /root/drupal-start.sh
-RUN chmod 777 /root/varnish-start.sh
 
 WORKDIR /var/www/html
 
