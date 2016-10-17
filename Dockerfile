@@ -33,6 +33,7 @@ VOLUME ["/root/.ssh_copy"]
 
 #For sharing config files between host and container
 COPY config /root/config
+RUN mkdir /root/config/apache && ln -s /usr/local/bin/apache2-foreground /root/config/apache/apache2-foreground
 RUN chmod -R 777 /root/config
 VOLUME ["/root/config"]
 
@@ -98,4 +99,4 @@ WORKDIR /var/www/html
 
 EXPOSE 8080 8088
 
-CMD apache2-foreground && bash /root/drupal-start.sh
+CMD apache2-foreground && bash /root/config/drupal-start.sh
