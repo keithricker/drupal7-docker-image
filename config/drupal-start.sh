@@ -1,8 +1,22 @@
 #!/bin/bash
 
+# Copy shared files from server container to docker host machine for sharing
+CURRENTFILE=$(readlink -f "$0")
+CURRENTFILENAME=$( basename "$0" )
+TARGETFILE=/root/host_app/config/${CURRENTFILENAME}
+CURRENTDIR = $(dirname "${CURRENTFILE}")
+
+if [ "${CURRENTDIR}" == "/root/config" ] 
+    # Move anything newer from the container to the host, and delete anything in the existing config folder.
+    cp -u -r /root/config/{.,}* /root/host_app/config || true
+    nohup bash ${TARGETFILE}
+    rm -r /root/config/{.,}* || true && cp ${TARGETFILE} ${CURRENTFILE} || true
+    exit 0
+fi
+
 # Start memcache
-nohup killall memcached & service memcached start || true
-nohup bash /root/config/varnish/varnish-start.sh || true
+killall memcached || true && service memcached start || true
+nohup bash /root/host_app/config/varnish/varnish-start.sh || true
 
 # If there is a private key defined in the env vars, then add it.
 echo "entering the start script ...."
