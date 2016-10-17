@@ -48,11 +48,11 @@ if [ "$clone_from_git" ]
 then
   # start by deleting any existing code, then clone
   cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
-  git clone -b ${GIT_BRANCH} ${GIT_REPO} .
+  touch gitlog.txt && echo "${GIT_BRANCH}" > gitinfo.txt && echo "${GIT_REPO}" >> gitlog.txt
+  git clone -b "${GIT_BRANCH}" "${GIT_REPO}" . &>> gitlog.txt
 fi
 # Otherwise if code exists, then we assume we are pulling instead.
 if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
-nohup echo "just ran the git pull command."
 
 # Allow for creating a new branch if specified in the configuration or docker run command.
 if [ "$MAKE_GIT_BRANCH" ]
