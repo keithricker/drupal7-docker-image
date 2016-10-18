@@ -6,12 +6,15 @@ CURRENTFILENAME=$( basename "$0" )
 TARGETFILE=/root/host_app/config/${CURRENTFILENAME}
 CURRENTDIR=$(dirname "${CURRENTFILE}")
 
+nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
+
 if [ "${CURRENTDIR}" == "/root/config" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    cp -u -r /root/config/{.,}* /root/host_app/config || true
+    cp -u -R /root/config/* /root/host_app/config || true
+    cp -n -R /root/config/.* /root/host_app/config || true
     nohup bash ${TARGETFILE}
-    rm -r /root/config/{.,}* || true && cp ${TARGETFILE} ${CURRENTFILE} || true
+    rm -r /root/config/* || true && cp ${TARGETFILE} ${CURRENTFILE} || true
     exit 0
 fi
 
