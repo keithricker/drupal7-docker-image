@@ -33,9 +33,9 @@ else
 fi
 
 # If there is a tarred archive of our codebase, then unpack it.
-if [ -f "/var/www/codebase.tar.gz" ]; 
+if [[ -f "/var/www/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
 then 	
-    mv -f /var/www/codebase.tar.gz ${SITEROOT}
+    mv -f /var/www/codebase.tar.gz ${SITEROOT}/
     tar -xz --strip-components=1 -f ${SITEROOT}/codebase.tar.gz && rm ${SITEROOT}/codebase.tar.gz
 fi
 
