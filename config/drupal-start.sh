@@ -34,11 +34,23 @@ else
     cp -a ~/.ssh_copy/. ~/.ssh/ && chown -R root:root ~/.ssh ~/.ssh/*
 fi
 
+CODEBASEDIR=${SITEROOT}/../codebase
+if [ ! -d "${CODEBASEDIR}" ]; then mkdir ${CODEBASEDIR}; fi
+
+function replace_codebase {
+    if [ -f "$1" ]
+    then
+        mv -f $1 ${CODEBASEDIR}/codebase.tar.gz || true
+        tar -xz --strip-components=1 -f ${CODEBASEDIR}/codebase.tar.gz && rm ${CODEBASEDIR}/codebase.tar.gz
+    fi
+    rsync -a ${CODEBASEDIR}/ ${SITEROOT}/ || true
+    rm -r ${CODEBASEDIR:?}/* ${CODEBASEDIR}/.* || true;
+} 
+
 # If there is a tarred archive of our codebase, then unpack it.
-if [[ -f "/var/www/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
+if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
 then 	
-    mv -f /var/www/codebase.tar.gz ${SITEROOT}/
-    tar -xz --strip-components=1 -f ${SITEROOT}/codebase.tar.gz && rm ${SITEROOT}/codebase.tar.gz
+    replace_codebase ${CODEBASEDIR}/codebase.tar.gz
 fi
 
 #If there is already existing code and no git repo is defined, then exit out
@@ -70,14 +82,12 @@ if [ "$git_repo_exists" ]; then git config --global --unset https.proxy && git c
 # clone the repo if it exists and we havent already downloaded drupal
 if [ "$clone_from_git" ]
 then
-  # start by deleting any existing code, then clone
-  cd / && find ${SITEROOT} -mindepth 1 -delete || true && cd ${SITEROOT}
-  mkdir ${SITEROOT}/../codebase && git clone -b "${GIT_BRANCH}" "${GIT_REPO}" ${SITEROOT}/../codebase
-  rsync -a ${SITEROOT}/../codebase/ ${SITEROOT}/ || true && rm -r ${SITEROOT}../codebase 
+  git clone -b "${GIT_BRANCH}" "${GIT_REPO}" ${CODEBASEDIR}
+  replace_codebase 
 fi
 # Otherwise if code exists, then we assume we are pulling instead.
-if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
-
+if [ "$pull_from_git" ]; then git pull ${GIT_REPO} origin ${GIT_BRANCH} ${CODEBASEDIR} && replace_codebase || true; fi
+    
 # Allow for creating a new branch if specified in the configuration or docker run command.
 if [ "$MAKE_GIT_BRANCH" ]
 then
