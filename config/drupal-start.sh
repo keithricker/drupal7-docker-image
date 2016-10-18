@@ -11,7 +11,7 @@ nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE
 if [ "${CURRENTDIR}" == "/root/config" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    rsync -av /root/config /root/host_app || true
+    rsync -a /root/config /root/host_app || true
     nohup bash ${TARGETFILE}
     rm -r /root/config/* /root/config/.* || true && cp -f ${TARGETFILE} ${CURRENTFILE} || true
     exit 0
@@ -71,9 +71,9 @@ if [ "$git_repo_exists" ]; then git config --global --unset https.proxy && git c
 if [ "$clone_from_git" ]
 then
   # start by deleting any existing code, then clone
-  cd / && find ${SITEROOT} -mindepth 1 -delete && cd ${SITEROOT}
-  touch gitlog.txt && echo "${GIT_BRANCH}" > gitinfo.txt && echo "${GIT_REPO}" >> gitlog.txt
-  git clone -b "${GIT_BRANCH}" "${GIT_REPO}" . &>> gitlog.txt
+  cd / && find ${SITEROOT} -mindepth 1 -delete || true && cd ${SITEROOT}
+  mkdir ${SITEROOT}/../codebase && git clone -b "${GIT_BRANCH}" "${GIT_REPO}" ${SITEROOT}/../codebase
+  rsync -a ${SITEROOT}/../codebase/ ${SITEROOT}/ || true && rm -r ${SITEROOT}../codebase 
 fi
 # Otherwise if code exists, then we assume we are pulling instead.
 if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull ${GIT_REPO} origin ${GIT_BRANCH} || true; fi
@@ -108,25 +108,18 @@ DRUPAL_FILES_DIR=${SITEROOT}/sites/default/files
 DRUPAL_PRIVATE_DIR=${SITEROOT}/sites/default/files/private
 DRUPAL_TMP_DIR=${SITEROOT}/tmp
 
-# create some directories
-if [ ! -d "${DRUPAL_TMP_DIR}" ]
+# create some directories and set permissions
+bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
+for cooldir in $bunchoders;
+do
+if [ ! -d "$cooldir" ]
 then
-  mkdir -p ${DRUPAL_TMP_DIR}
-  chmod 775 ${DRUPAL_TMP_DIR}
-  chown www-data:www-data ${DRUPAL_TMP_DIR}
+  mkdir -p $cooldir
+  chmod 775 $cooldir
+  chown www-data:www-data $cooldir
 fi
-if [ ! -d "${DRUPAL_FILES_DIR}" ]
-then
-  mkdir -p ${DRUPAL_FILES_DIR}
-  chmod 775 ${DRUPAL_FILES_DIR}
-  chown www-data:www-data ${DRUPAL_FILES_DIR}
-fi
-if [ ! -d "${DRUPAL_PRIVATE_DIR}" ]
-then
-  mkdir -p ${DRUPAL_PRIVATE_DIR}
-  chown www-data:www-data ${DRUPAL_PRIVATE_DIR}
-  chmod -R 664 ${DRUPAL_PRIVATE_DIR}
-fi
+done
+chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
@@ -226,7 +219,10 @@ then
     echo $y
 fi
 
-# Remove drush and composer
+# Remove drush and composer if not in dev mode
+if [ ! ${DEVELOPMENT_MODE} ]
+then
 rm /usr/bin/drush || true
 rm /usr/local/bin/composer || true
 rm -r /root/.composer || true
+fi
