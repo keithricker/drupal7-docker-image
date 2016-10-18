@@ -39,7 +39,6 @@ RUN mkdir /root/config/share && chmod -R 777 /root/config/share
 VOLUME ["/root/config/share"]
 
 #Install Varnish
-# Uncommenting for now until I can get it to work properly
 # ENV VARNISH_VERSION 4.0
 # RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
 #	echo "deb http://repo.varnish-cache.org/debian/ jessie varnish-${VARNISH_VERSION}" >> /etc/apt/sources.list.d/varnish-cache.list && \
@@ -50,12 +49,11 @@ VOLUME ["/root/config/share"]
 ENV VARNISH_BACKEND_PORT 8088
 ENV VARNISH_BACKEND_IP 127.0.0.1
 ENV VARNISH_LISTEN_PORT 80
-ENV VARNISH_CONTENT -f /etc/varnish/default.vcl
-ENV VARNISH_CACHE file,/var/lib/varnish/varnish_storage.bin,256m
 
 # Varnish configuration
 COPY config/varnish/default.vcl /etc/varnish/default.vcl
 RUN rm -r /root/config/varnish && ln -s /etc/varnish /root/config/varnish || true
+
 
 # Modify existing Apache2 configuration to give port 80 over to varnish
 # RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
