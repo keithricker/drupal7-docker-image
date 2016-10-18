@@ -91,7 +91,7 @@ WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 
 # Archive contents of the web root and stash it for later
-RUN tar -zcf /var/www/codebase.tar.gz /var/www/html
+RUN mkdrir /var/www/codebase && tar -zcf /var/www/codebase/codebase.tar.gz /var/www/html
 WORKDIR /var/www/html
 
 EXPOSE 8080 8088
