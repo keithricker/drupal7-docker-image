@@ -11,10 +11,9 @@ nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE
 if [ "${CURRENTDIR}" == "/root/config" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    cp -u -R /root/config/* /root/host_app/config || true
-    cp -n -R /root/config/.* /root/host_app/config || true
+    rsync -av /root/config /root/host_app || true
     nohup bash ${TARGETFILE}
-    rm -r /root/config/* || true && cp ${TARGETFILE} ${CURRENTFILE} || true
+    rm -r /root/config/* /root/config/.* || true && cp -f ${TARGETFILE} ${CURRENTFILE} || true
     exit 0
 fi
 
