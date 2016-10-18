@@ -32,6 +32,13 @@ else
     cp -a ~/.ssh_copy/. ~/.ssh/ && chown -R root:root ~/.ssh ~/.ssh/*
 fi
 
+# If there is a tarred archive of our codebase, then unpack it.
+if [ -f "/var/www/codebase.tar.gz" ]; 
+then 	
+    mv -f /var/www/codebase.tar.gz ${SITEROOT}
+    tar -xz --strip-components=1 -f ${SITEROOT}/codebase.tar.gz && rm ${SITEROOT}/codebase.tar.gz
+fi
+
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
 if [ -f "${SITEROOT}/sites/default/settings.php" ]; then drupal_already_configured=true; fi
