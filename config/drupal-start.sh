@@ -50,6 +50,7 @@ function replace_codebase {
 # If there is a tarred archive of our codebase, then unpack it.
 if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
 then 	
+    echo "Expanding codebase .... "
     replace_codebase ${CODEBASEDIR}/codebase.tar.gz
 fi
 
@@ -70,6 +71,7 @@ if [ "$move_along" ]; then echo "Code already exists, site is configured and not
 # If we're downloading drupal from scratch, then set our variables to specify the source and version.
 if [ "$download_drupal_from_scratch" ]
 then 
+    echo "We need to download drupal from scratch ... "
     git_repo_exists=true
     clone_from_git=true
     GIT_REPO="${DRUPAL_SOURCE}"
@@ -82,6 +84,7 @@ if [ "$git_repo_exists" ]; then git config --global --unset https.proxy && git c
 # clone the repo if it exists and we havent already downloaded drupal
 if [ "$clone_from_git" ]
 then
+  echo "cloning from git ... "
   git clone -b "${GIT_BRANCH}" "${GIT_REPO}" ${CODEBASEDIR}
   replace_codebase 
 fi
@@ -139,6 +142,7 @@ dir=${dir##*/}
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
 
+echo "Checking for existing site configuration ... "
 # break out if site is configured already or we're in sites/all
 if [ "$dir" == "all" ]; then continue; fi;
 
@@ -175,9 +179,10 @@ then
   echo
   continue
 fi
-nohup echo "Just got done installing site"
+echo "Just got done installing site ... "
 
 # Install backup and migrate
+echo "Enabling backup and migrate module .... "
 drush en backup_migrate -y || true
 
 #
