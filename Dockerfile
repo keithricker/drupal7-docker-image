@@ -8,11 +8,11 @@ WORKDIR /root
 ENV SITEROOT /var/www/html
 
 # If git repo and/or branch are specified then we can use them for pulling/cloning codebase
-ENV GIT_REPO false
+ENV GIT_REPO
 ENV GIT_BRANCH master
 # If project is under version control and user would like to create a new git branch from their code base,
 # then specify the name of the new branch to create.
-ENV MAKE_GIT_BRANCH false
+ENV MAKE_GIT_BRANCH
 
 # Source for downloading fresh drupal sourcecode - this will be used by default.
 ENV DRUPAL_SOURCE https://github.com/drupal/drupal.git
@@ -32,11 +32,9 @@ RUN if [ ! -d "/root/.ssh_copy" ]; then mkdir /root/.ssh_copy && chmod 0700 /roo
 VOLUME ["/root/.ssh_copy"]
 
 #For sharing config files between host and container
-COPY config /root/config && chmod -R 777 /root/config
-
-# Make a shared directory for sharing configs with host
-RUN mkdir /root/config/share && chmod -R 777 /root/config/share
-VOLUME ["/root/config/share"]
+COPY config /root/config
+RUN mkdir -p /root/host_app/config && chmod -R 777 /root/config /root/host_app
+VOLUME ["/root/host_app/config"]
 
 #Install Varnish
 # ENV VARNISH_VERSION 4.0
