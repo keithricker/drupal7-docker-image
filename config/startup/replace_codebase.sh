@@ -1,5 +1,6 @@
 #!/bin/bash
 
+CODEBASEDIR=${SITEROOT}/../codebase
 function replace_codebase {
     if [ -f "$1" ]
     then
