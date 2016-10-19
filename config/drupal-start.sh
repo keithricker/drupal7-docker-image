@@ -30,7 +30,7 @@ service tomcat7 start || true
 bash /root/host_app/config/startup/copy_private_key.sh
 
 # Include the replace_codebase function.
-source /root/host_app/config/startup replace_codebase.sh
+source /root/host_app/config/startup/replace_codebase.sh
 
 # If there is a tarred archive of our codebase, then unpack it.
 if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
@@ -85,26 +85,9 @@ fi
 
 cd ${SITEROOT}
 
-# Time now to install drupa. First, we'll defnie a few variables
-drupalprofile=minimal
-drupalsitename=drupal7
-adminpass=drupal
-dbname=drupal
-dbhost=database
-dbuname=drupal
-dbpass=drupal
-dbport=3306
-# We'll over-ride the defaults if environment variables are defining them.
-if [ "${DRUPAL_SITENAME}" != "" ]; then drupalsitename="${DRUPAL_SITENAME}"; fi
-if [ "${MYSQL_ENV_MYSQL_DATABASE}" != "" ]; then dbname=$MYSQL_ENV_MYSQL_DATABASE; fi
-if [ "${MYSQL_ENV_MYSQL_USER}" != "" ]; then dbuname=$MYSQL_ENV_MYSQL_USER; fi
-if [ "${MYSQL_ENV_MYSQL_PASSWORD}" != "" ]; then dbpass=$MYSQL_ENV_MYSQL_PASSWORD; fi
-if [ "${MYSQL_PORT_3306_TCP_PORT}" != "" ]; then dbport=$MYSQL_PORT_3306_TCP_PORT; fi
-
-DRUPAL_SITE_DIR=${SITEROOT}/sites
-DRUPAL_FILES_DIR=${SITEROOT}/sites/default/files
-DRUPAL_PRIVATE_DIR=${SITEROOT}/sites/default/files/private
-DRUPAL_TMP_DIR=${SITEROOT}/tmp
+# Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
+# ... as well as variables for our files, private and temp directories, etc.
+source /root/host_app/config/startup/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
