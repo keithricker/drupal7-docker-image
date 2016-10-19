@@ -205,7 +205,7 @@ fi
 # Remove drush and composer if not in dev mode
 if [ ! ${DEVELOPMENT_MODE} ]
 then
-rm /usr/bin/drush || true
-rm /usr/local/bin/composer || true
-rm -r /root/.composer || true
+   rm /usr/bin/drush || true
+   rm /usr/local/bin/composer || true
+   rm -r /root/.composer || true
 fi
