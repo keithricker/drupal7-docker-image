@@ -17,6 +17,8 @@ then
     exit 0
 fi
 
+# Edit apache config files to listen on port specified in env variable.
+set_listen_port
 # Start memcache
 service memcached start || true
 service tomcat7 start || true
