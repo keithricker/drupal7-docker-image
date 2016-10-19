@@ -44,7 +44,7 @@ RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
 	apt-get install -yq varnish
 
 # Varnish configuration variables
-ENV VARNISH_BACKEND_PORT 8088
+ENV VARNISH_BACKEND_PORT 8080
 ENV VARNISH_BACKEND_IP 127.0.0.1
 ENV VARNISH_LISTEN_PORT 6081
 
