@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function replace_codebase {
     if [ -f "$1" ]
     then
