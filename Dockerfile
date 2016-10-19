@@ -50,8 +50,7 @@ ENV VARNISH_LISTEN_PORT 6081
 
 # Varnish configuration
 COPY config/varnish/default.vcl /etc/varnish/default.vcl
-RUN mv -u /root/config/varnish /root/host_app/config/ && \
-    ln -s /root/host_app/config/varnish/default.vcl /etc/varnish/default.vcl  || true
+COPY config/varnish/varnish /etc/default/varnish
 
 # Modify existing Apache2 configuration to give port 80 over to varnish
 # RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
