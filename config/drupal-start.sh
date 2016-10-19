@@ -19,6 +19,7 @@ fi
 
 # Start memcache
 killall memcached || true && service memcached start || true
+service tomcat7 start || true
 nohup bash /root/host_app/config/varnish/varnish-start.sh || true
 
 # If there is a private key defined in the env vars, then add it.
