@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "entering the start script ...."
+
 # Copy shared files from server container to docker host machine for sharing
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
@@ -18,23 +20,14 @@ then
 fi
 
 # Edit apache config files to listen on port specified in env variable.
-set_listen_port
+bash /root/host_app/config/apache/set_listen_port.sh
 # Start memcache
 service memcached start || true
+# Start Apache Solr
 service tomcat7 start || true
 
 # If there is a private key defined in the env vars, then add it.
-echo "entering the start script ...."
-if [ "${PRIVATE_KEY_CONTENTS}" != "" ]
-then
-    echo "Copying over the private key."
-    echo "${PRIVATE_KEY_CONTENTS}" > ~/.ssh/${PRIVATE_KEY_FILE}
-    sed -i 's/\\n/\
-/g' ~/.ssh/${PRIVATE_KEY_FILE}
-    chmod 600  ~/.ssh/${PRIVATE_KEY_FILE}
-else
-    cp -a ~/.ssh_copy/. ~/.ssh/ && chown -R root:root ~/.ssh ~/.ssh/*
-fi
+bash /root/host_app/config/startup/copy_private_key.sh
 
 CODEBASEDIR=${SITEROOT}/../codebase
 if [ ! -d "${CODEBASEDIR}" ]; then mkdir ${CODEBASEDIR}; fi
