@@ -9,7 +9,7 @@ then
 fi
 
 # Fix up the varnish config file because it doesn't seem to like variables.
-if [ "${HOSTNAME}" != "" ]; then VARNISH_BACKEND_IP="${HOSTNAME}"; fi
+# if [ "${HOSTNAME}" != "" ]; then VARNISH_BACKEND_IP="${HOSTNAME}"; fi
 sed -i -e “s/\${VARNISH_BACKEND_IP}/${varnishbeip}/g” /root/host_app/config/varnish/default.vcl
 sed -i -e “s/\${VARNISH_BACKEND_PORT}/${VARNISH_BACKEND_PORT}/g” /root/host_app/config/varnish/default.vcl
 
