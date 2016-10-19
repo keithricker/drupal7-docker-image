@@ -5,7 +5,7 @@ echo "entering the start script ...."
 # Copy shared files from server container to docker host machine for sharing
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
-TARGETFILE=/root/host_app/config/scripts/startup${CURRENTFILENAME}
+TARGETFILE=/root/host_app/config/scripts/startup/${CURRENTFILENAME}
 CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
