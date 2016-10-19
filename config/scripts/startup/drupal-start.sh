@@ -10,7 +10,7 @@ CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
 
-if [ "${CURRENTDIR}" == "/root/config" ]
+if [ "${CURRENTDIR}" == "/root/config/scripts/startup" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     rsync -a /root/config /root/host_app || true
@@ -27,10 +27,10 @@ service memcached start || true
 service tomcat7 start || true
 
 # If there is a private key defined in the env vars, then add it.
-bash /root/host_app/config/startup/copy_private_key.sh
+bash /root/host_app/config/scripts/startup/copy_private_key.sh
 
 # Include the replace_codebase function.
-source /root/host_app/config/startup/replace_codebase.sh
+source /root/host_app/config/scripts/startup/replace_codebase.sh
 
 # If there is a tarred archive of our codebase, then unpack it.
 if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
@@ -87,7 +87,7 @@ cd ${SITEROOT}
 
 # Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
 # ... as well as variables for our files, private and temp directories, etc.
-source /root/host_app/config/startup/drupal_config_variables.sh
+source /root/host_app/config/scripts/startup/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
