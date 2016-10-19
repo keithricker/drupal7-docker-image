@@ -36,10 +36,8 @@ COPY config /root/config
 RUN mkdir -p /root/host_app/config && chmod -R 777 /root/config /root/host_app
 VOLUME ["/root/host_app/config"]
 
-# Modify existing Apache2 configuration to give port 80 over to varnish
-# RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
-# RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/default-ssl.conf
-# RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/000-default.conf
+# Here you can set the port that Apache serves from (listens on) 
+ENV APACHE_LISTEN_PORT 80
 
 # Memcache Installation
 RUN apt-get update && apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential || true
