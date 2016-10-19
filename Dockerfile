@@ -36,30 +36,10 @@ COPY config /root/config
 RUN mkdir -p /root/host_app/config && chmod -R 777 /root/config /root/host_app
 VOLUME ["/root/host_app/config"]
 
-# Install Varnish
-ENV VARNISH_VERSION 4.0
-RUN curl -sS https://repo.varnish-cache.org/GPG-key.txt | apt-key add - && \
-    echo "deb http://repo.varnish-cache.org/debian/ jessie varnish-${VARNISH_VERSION}" >> /etc/apt/sources.list.d/varnish-cache.list && \
-	apt-get update && \
-	apt-get install -yq varnish
-
-# Varnish configuration variables
-ENV VARNISH_BACKEND_PORT 8080
-ENV VARNISH_BACKEND_IP 127.0.0.1
-ENV VARNISH_LISTEN_PORT 6081
-
-# Varnish configuration
-COPY config/varnish/default.vcl /etc/varnish/default.vcl
-COPY config/varnish/varnish /etc/default/varnish
-
 # Modify existing Apache2 configuration to give port 80 over to varnish
 # RUN sed -i 's/Listen 80/Listen 8088/g' /etc/apache2/ports.conf
 # RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/default-ssl.conf
 # RUN sed -i 's/VirtualHost \*:80/VirtualHost \*:8088/g' /etc/apache2/sites-available/000-default.conf
-
-# Add configuration volumes for varnish
-# VOLUME ["/var/lib/varnish"]
-# VOLUME ["/etc/varnish"]
 
 # Memcache Installation
 RUN apt-get update && apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential || true
@@ -75,7 +55,7 @@ RUN ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
 RUN apt-get -y install solr-tomcat
 # Solr configuration can be done by visiting: localhost:8080/solr
 # Add configuration volume for solr
-VOLUME ["/usr/share/solr"]
+# VOLUME ["/usr/share/solr"]
 
 # Install composer
 WORKDIR /root
