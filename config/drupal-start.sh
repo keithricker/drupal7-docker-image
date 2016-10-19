@@ -29,19 +29,8 @@ service tomcat7 start || true
 # If there is a private key defined in the env vars, then add it.
 bash /root/host_app/config/startup/copy_private_key.sh
 
-CODEBASEDIR=${SITEROOT}/../codebase
-if [ ! -d "${CODEBASEDIR}" ]; then mkdir ${CODEBASEDIR}; fi
-
-function replace_codebase {
-    if [ -f "$1" ]
-    then
-        mv -f $1 ${CODEBASEDIR}/codebase.tar.gz || true
-        cd ${CODEBASEDIR} && tar -xz --strip-components=1 -f --keep-newer-files codebase.tar.gz
-        rm codebase.tar.gz && cd ${SITEROOT}
-    fi
-    rsync -a ${CODEBASEDIR}/ ${SITEROOT}/ || true
-    rm -r ${CODEBASEDIR:?}/* ${CODEBASEDIR}/.* || true;
-} 
+# Include the replace_codebase function.
+source /root/host_app/config/startup replace_codebase.sh
 
 # If there is a tarred archive of our codebase, then unpack it.
 if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
