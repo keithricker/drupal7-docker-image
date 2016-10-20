@@ -91,7 +91,7 @@ cd ${SITEROOT}
 
 # Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
 # ... as well as variables for our files, private and temp directories, etc.
-source /root/host_app/config/scripts/startup/drupal_config_variables.sh
+source ${startupscripts}/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
