@@ -15,7 +15,8 @@ then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     rsync -a /root/config /root/host_app || true
     bash ${TARGETFILE}
-    rm -r /root/config/* /root/config/.* || true && cp -f ${TARGETFILE} ${CURRENTFILE} || true
+    rm -r /root/config/* /root/config/.* || true
+    mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
     exit 0
 fi
 
