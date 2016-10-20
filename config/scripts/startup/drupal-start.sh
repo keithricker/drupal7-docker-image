@@ -8,7 +8,7 @@ localscripts=/root/config/scripts
 startupscripts=${hostscripts}/startup
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
-TARGETFILE=${hostscripts}/startup/${CURRENTFILENAME}
+TARGETFILE=${startupscripts}/${CURRENTFILENAME}
 CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
@@ -34,7 +34,7 @@ service tomcat7 start || true
 bash ${startupscripts}/copy_private_key.sh
 
 # Include the replace_codebase function.
-source /root/host_app/config/scripts/startup/replace_codebase.sh
+source ${startupscripts}/replace_codebase.sh
 
 # If there is a tarred archive of our codebase, then unpack it.
 if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
