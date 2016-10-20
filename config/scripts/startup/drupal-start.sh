@@ -3,14 +3,17 @@
 echo "entering the start script ...."
 
 # Copy shared files from server container to docker host machine for sharing
+hostscripts=/root/host_app/config/scripts
+localscripts=/root/config/scripts
+startupscripts=${hostscripts}/startup
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
-TARGETFILE=/root/host_app/config/scripts/startup/${CURRENTFILENAME}
+TARGETFILE=${hostscripts}/startup/${CURRENTFILENAME}
 CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
 
-if [ "${CURRENTDIR}" == "/root/config/scripts/startup" ]
+if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     rsync -a /root/config /root/host_app || true
@@ -28,7 +31,7 @@ service memcached start || true
 service tomcat7 start || true
 
 # If there is a private key defined in the env vars, then add it.
-bash /root/host_app/config/scripts/startup/copy_private_key.sh
+bash ${startupscripts}/copy_private_key.sh
 
 # Include the replace_codebase function.
 source /root/host_app/config/scripts/startup/replace_codebase.sh
