@@ -79,7 +79,7 @@ source ${startupscripts}/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
-for cooldir in $bunchoders;
+for cooldir in ${bunchoders[@]};
 do
 if [ ! -d "$cooldir" ]
 then
