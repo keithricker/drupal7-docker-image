@@ -45,14 +45,14 @@ fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
-if [ -f "${SITEROOT}/sites/default/settings.php" ]; then drupal_already_configured=true; fi
+if [[ "$drupal_already_configured" == "" && -f "${SITEROOT}/sites/default/settings.php" ]]; then drupal_already_configured=true; fi
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
 # Yes this is more code than necessary but it makes things esier to follow along with.
-if [[ "$drupal_already_configured" && ! "$git_repo_exists" ]]; then move_along=true; fi
-if [[ "$drupal_files_exist" && "$git_repo_exists" ]]; then pull_from_git=true; fi
-if [[ ! "$drupal_files_exist" && "$git_repo_exists" ]]; then clone_from_git=true; fi
-if [[ ! "$drupal_files_exist" && ! "$git_repo_exists" ]]; then download_drupal_from_scratch=true; fi
+if [ "$move_along" == "" ] && [ "$drupal_already_configured" ] && [ ! "$git_repo_exists" ]; then move_along=true; fi
+if [ "$pull_from_git" == "" ] && [ "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then pull_from_git=true; fi
+if [ "$clone_from_git" == "" ] && [ ! "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then clone_from_git=true; fi
+if [ "$download_drupal_from_scratch" == "" ] && [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then download_drupal_from_scratch=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ "$move_along" ]; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
@@ -137,20 +137,12 @@ fi
 # Drush won't install the site if there is an existing settings.php file. So we'll do this as a work-around
 #
 cd ${DRUPAL_SITE_DIR}/$dir
-if [ -f "${DRUPAL_SETTINGS}" ]; then mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.bak; fi
-echo
+
+echo ""
 echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
-echo
-if [ "$dir" != "default" ]
-then
-  drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true
-fi
-if ! drush site-install standard --site-name=${drupalsitename} --account-pass=$adminpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes
-then
-  echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
-  echo
-  continue
-fi
+echo ""
+
+source ${startupscripts}/install_drupal.sh && install_drupal
 echo "Just got done installing site ... "
 
 # Install backup and migrate
