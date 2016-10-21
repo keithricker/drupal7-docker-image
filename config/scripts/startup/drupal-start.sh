@@ -159,11 +159,11 @@ then
    mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
    chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
 
-   if ! grep '$localsettings = $drupalenv.\'.settings.php' ${DRUPAL_SETTINGS};
+   includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
+   if ! grep "$includestring" ${DRUPAL_SETTINGS};
    then
    source ${startupscripts}/modify_settings_file_1.sh
    fi
-
    DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 fi
 
