@@ -6,7 +6,7 @@ function grab_git_repo() {
     git config --global --unset https.proxy && git config --global --unset http.proxy; fi
 
     args=( $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 ) && index=0   
-    for myarg in $args; do
+    for myarg in ${args[@]}; do
        if [[ $myarg == -* ]]
        then
           argname=${myarg#?}
