@@ -142,7 +142,7 @@ echo ""
 echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
 echo ""
 
-source ${startupscripts}/install_drupal.sh && install_drupal
+source ${startupscripts}/install_drupal.sh
 echo "Just got done installing site ... "
 
 # Install backup and migrate
@@ -155,10 +155,16 @@ drush en backup_migrate -y || true
 #
 if [ -f "${DRUPAL_SETTINGS}.bak" ]
 then
-  mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-  mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
-  chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-  DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
+   mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
+   mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
+   chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
+
+   if ! grep '$localsettings = $drupalenv.\'.settings.php' ${DRUPAL_SETTINGS};
+   then
+   source "${startupscripts}/modify_settings_file_1.sh
+   fi
+
+   DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 fi
 
 #
