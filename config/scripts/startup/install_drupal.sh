@@ -11,6 +11,7 @@ then
    remotecommand+="drush cc all && drush sql-dump -y > ~/my-sql-dump-file.sql"
    ssh -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_IP} "${remotecommand}"
    scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_IP}:~/my-sql-dump-file.sql /root
+   drush sql-cli < /root/my-sql-dump-file.sql
 fi
 
 if [ -f "${DRUPAL_SETTINGS}" ]; then mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.bak; fi
