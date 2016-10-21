@@ -5,7 +5,7 @@ function grab_git_repo() {
     # If git repo environment variable is defined and there is no existing code, then clone from that repo.
     git config --global --unset https.proxy && git config --global --unset http.proxy; fi
 
-    args=( $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 ) && index=0   
+    local args=( $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 ) && index=0   
     for myarg in ${args[@]}; do
        if [[ $myarg == -* ]]
        then
