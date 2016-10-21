@@ -49,10 +49,10 @@ if [[ "$drupal_already_configured" == "" && -f "${SITEROOT}/sites/default/settin
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
 # Yes this is more code than necessary but it makes things esier to follow along with.
-if [ "$move_along" == "" ] && [ "$drupal_already_configured" ] && [ ! "$git_repo_exists" ]; then move_along=true; fi
-if [ "$pull_from_git" == "" ] && [ "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then pull_from_git=true; fi
-if [ "$clone_from_git" == "" ] && [ ! "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then clone_from_git=true; fi
-if [ "$download_drupal_from_scratch" == "" ] && [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then download_drupal_from_scratch=true; fi
+if [ "$drupal_already_configured" == "true" ] && [ ! "$git_repo_exists" ]; then move_along=true; fi
+if [ "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then pull_from_git=true; fi
+if [ ! "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then clone_from_git=true; fi
+if [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then download_drupal_from_scratch=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ "$move_along" ]; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
