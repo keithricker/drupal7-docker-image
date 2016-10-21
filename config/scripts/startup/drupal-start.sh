@@ -45,7 +45,7 @@ fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
-if [[ "$drupal_already_configured" == "" && -f "${SITEROOT}/sites/default/settings.php" ]]; then drupal_already_configured=true; fi
+if [ -f "${SITEROOT}/sites/default/local.settings.php" ]]; then drupal_already_configured=true; fi
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
 # Yes this is more code than necessary but it makes things esier to follow along with.
