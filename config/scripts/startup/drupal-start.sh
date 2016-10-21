@@ -161,7 +161,7 @@ then
 
    if ! grep '$localsettings = $drupalenv.\'.settings.php' ${DRUPAL_SETTINGS};
    then
-   source "${startupscripts}/modify_settings_file_1.sh
+   source ${startupscripts}/modify_settings_file_1.sh
    fi
 
    DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
