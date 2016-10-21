@@ -67,25 +67,9 @@ then
     GIT_BRANCH="${DRUPAL_VERSION}"
 fi
 
-# If git repo environment variable is defined and there is no existing code, then clone from that repo.
-if [ "$git_repo_exists" ]; then git config --global --unset https.proxy && git config --global --unset http.proxy; fi
-
-# clone the repo if it exists and we havent already downloaded drupal
-if [ "$clone_from_git" ]
-then
-  echo "cloning from git ... "
-  git clone -b "${GIT_BRANCH}" "${GIT_REPO}" ${CODEBASEDIR}
-  replace_codebase 
-fi
-# Otherwise if code exists, then we assume we are pulling instead.
-if [ "$pull_from_git" ]; then git pull ${GIT_REPO} origin ${GIT_BRANCH} ${CODEBASEDIR} && replace_codebase || true; fi
-    
-# Allow for creating a new branch if specified in the configuration or docker run command.
-if [ "$MAKE_GIT_BRANCH" ]
-then
-   git checkout -b ${MAKE_GIT_BRANCH} || true
-   git push origin ${MAKE_GIT_BRANCH} || true
-fi
+# Clone or pull our repo from GIT, etc.
+source ${startupscripts}/git_commands.sh
+grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
 cd ${SITEROOT}
 
@@ -143,7 +127,7 @@ echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
 echo ""
 
 # If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
-if drush pm-info node; then echo "Site is already installed here. Moving along." && continue; fi
+if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; fi
 
 echo "Attempting to import the database."
 
@@ -191,8 +175,7 @@ fi
 
 #
 # Further modify the drupal settings.php file to set defaults for local environment.
-# Otherwise, if we import the production database, then we wil be stuck with whatever settings production is using.
-# Amd some of those settings can spell disaster (or at leas minor disaster) on local development environments.
+# Otherwise, if we import the production database, we wil be stuck with settings production is using.
 #
 source ${startupscripts}/modify_settings_file_2.sh
 
