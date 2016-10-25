@@ -164,14 +164,14 @@ then
    mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
    mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
    chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
+   includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
+   if ! grep "$includestring" ${DRUPAL_SETTINGS};
+   then
+       source ${startupscripts}/modify_settings_file_1.sh
+   fi
+   DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 fi
 
-includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
-if ! grep "$includestring" ${DRUPAL_SETTINGS};
-then
-    source ${startupscripts}/modify_settings_file_1.sh
-fi
-DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 
 #
 # Further modify the drupal settings.php file to set defaults for local environment.
