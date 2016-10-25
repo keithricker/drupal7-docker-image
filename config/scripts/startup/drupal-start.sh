@@ -11,14 +11,12 @@ CURRENTFILENAME=$( basename "$0" )
 TARGETFILE=${startupscripts}/${CURRENTFILENAME}
 CURRENTDIR=$(dirname "${CURRENTFILE}")
 
-nohup echo $CURRENTFILE && nohup echo $CURRENTFILENAME && nohup echo $TARGETFILE && nohup echo $CURRENTDIR
-
 if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     rsync -a /root/config /root/host_app || true
     bash ${TARGETFILE}
-    rm -r /root/config/* /root/config/.* || true
+    rm -rf /root/config/* /root/config/.* || true
     mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
     exit 0
 fi
@@ -36,13 +34,6 @@ bash ${startupscripts}/copy_private_key.sh
 # Include the replace_codebase function.
 source ${startupscripts}/replace_codebase.sh
 
-# If there is a tarred archive of our codebase, then unpack it.
-if [[ -f "${CODEBASEDIR}/codebase.tar.gz" && ! -f "${SITEROOT}/index.php" ]]
-then 	
-    echo "Expanding codebase .... "
-    replace_codebase ${CODEBASEDIR}/codebase.tar.gz
-fi
-
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
 if [ -f "${SITEROOT}/sites/default/local.settings.php" ]]; then drupal_already_configured=true; fi
@@ -52,19 +43,27 @@ if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 if [ "$drupal_already_configured" == "true" ] && [ ! "$git_repo_exists" ]; then move_along=true; fi
 if [ "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then pull_from_git=true; fi
 if [ ! "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then clone_from_git=true; fi
-if [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then download_drupal_from_scratch=true; fi
+if [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then install_drupal_from_scratch=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ "$move_along" ]; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
 
 # If we're downloading drupal from scratch, then set our variables to specify the source and version.
-if [ "$download_drupal_from_scratch" ]
+if [ "$install_drupal_from_scratch" ]
 then 
-    echo "We need to download drupal from scratch ... "
-    git_repo_exists=true
-    clone_from_git=true
-    GIT_REPO="${DRUPAL_SOURCE}"
-    GIT_BRANCH="${DRUPAL_VERSION}"
+    # If there is a tarred archive of our codebase, then unpack it.
+    if [ -f "${CODEBASEDIR}/codebase.tar.gz" ]
+    then 	
+        echo "Expanding codebase .... "
+        replace_codebase ${CODEBASEDIR}/codebase.tar.gz
+        drupal_files_exist=true;
+    else
+        echo "We need to download drupal from scratch ... "
+        git_repo_exists=true
+        clone_from_git=true
+        GIT_REPO="${DRUPAL_SOURCE}"
+        GIT_BRANCH="${DRUPAL_VERSION}"
+    fi
 fi
 
 # Clone or pull our repo from GIT, etc.
@@ -95,6 +94,7 @@ do
 # get the name of the current directory and assign it to dir
 dir=${dir%*/}
 dir=${dir##*/}
+DRUPAL_DEFAULT_SETTINGS=${DRUPAL_SITE_DIR}/$dir/default.settings.php
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
 
@@ -157,21 +157,22 @@ drush en backup_migrate -y || true
 
 #
 # If the repo came with a settings.php file then we'll create a local.settings.php file to be included with 
-# local connection details
+# local connection details.
 #
 if [ -f "${DRUPAL_SETTINGS}.bak" ]
 then
-   mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-   mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
-   chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-   includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
-   if ! grep "$includestring" ${DRUPAL_SETTINGS};
-   then
-       source ${startupscripts}/modify_settings_file_1.sh
-   fi
-   DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
+    mv "${DRUPAL_DEFAULT_SETTINGS}" "${DRUPAL_SETTINGS}.bak"
 fi
+mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
+mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
 
+chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
+includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
+if ! grep "$includestring" ${DRUPAL_SETTINGS};
+then
+   source ${startupscripts}/modify_settings_file_1.sh
+fi
+DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 
 #
 # Further modify the drupal settings.php file to set defaults for local environment.
