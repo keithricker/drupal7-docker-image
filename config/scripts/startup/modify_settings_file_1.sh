@@ -1,15 +1,13 @@
 #!/bin/bash
 
-addthis=$(cat <<EOF
-#
-# Add include statement for local.settings.php
-#
-$drupalenv = getenv('DRUPAL_ENVIRONMENT');
-if (empty($drupalenv)) $drupalenv = "local";
-$localsettings = $drupalenv.'.settings.php';
-if (is_readable(dirname(__FILE__) . DIRECTORY_SEPARATOR . $localsettings)) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . $localsettings;
-}
-EOF
-)
-echo "$addthis" >> ${DRUPAL_SETTINGS}
+addthis="\n \
+#\n \
+# Add include statement for local.settings.php\n\
+#\n\
+\$drupalenv = getenv('DRUPAL_ENVIRONMENT'); \n\
+if (empty(\$drupalenv)) \$drupalenv = \"local\"; \n\
+\$localsettings = \$drupalenv.'.settings.php'; \n\
+if (is_readable(dirname(__FILE__) . DIRECTORY_SEPARATOR . \$localsettings)) { \n\
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . \$localsettings; \n\
+}"
+echo "${addthis}" >> ${DRUPAL_SETTINGS}
