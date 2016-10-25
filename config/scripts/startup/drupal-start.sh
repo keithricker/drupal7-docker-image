@@ -82,7 +82,7 @@ for cooldir in ${bunchoders[@]};
 do
 if [ ! -d "$cooldir" ]
 then
-  mkdir -p $cooldir
+  mkdir -fp $cooldir
   chmod 775 $cooldir
   chown www-data:www-data $cooldir
 fi
