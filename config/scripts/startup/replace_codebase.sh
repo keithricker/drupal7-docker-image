@@ -9,5 +9,5 @@ function replace_codebase {
         rm codebase.tar.gz && cd ${SITEROOT}
     fi
     rsync -a ${CODEBASEDIR}/ ${SITEROOT}/ || true && chown -r www-data:www-data ${SITEROOT}
-    rm -r ${CODEBASEDIR:?}/* ${CODEBASEDIR}/.* || true;
+    rm -rf ${CODEBASEDIR:?}/* ${CODEBASEDIR}/.* || true;
 } 
