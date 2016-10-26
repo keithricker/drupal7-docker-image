@@ -13,4 +13,4 @@ echo "\$base_url = \$scheme . '://' . \$_SERVER['HTTP_HOST'];" >> ${DRUPAL_LOCAL
 echo "\$conf['file_private_path'] = '$DRUPAL_PRIVATE_DIR';" >> ${DRUPAL_LOCAL_SETTINGS}
 echo "\$conf['file_temporary_path'] = '$DRUPAL_TMP_DIR';" >> ${DRUPAL_LOCAL_SETTINGS}
 
-chown www-data ${DRUPAL_LOCAL_SETTINGS}
+chown www-data:www-data ${DRUPAL_LOCAL_SETTINGS}
