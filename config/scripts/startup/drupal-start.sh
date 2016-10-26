@@ -138,8 +138,7 @@ if [ -f "${DRUPAL_SETTINGS}" ]; then mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.ba
 if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes
 then
   echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
-  echo
-  continue
+  echo "" && true
 fi
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
@@ -164,7 +163,7 @@ if [ -f "${DRUPAL_SETTINGS}.bak" ]
 then 
     mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
 else
-    cp ${DRUPAL_DEFAULT_SETTINGS} ${DRUPAL_SETTINGS}
+    cp -rp ${DRUPAL_DEFAULT_SETTINGS} ${DRUPAL_SETTINGS}
 fi
 
 chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
