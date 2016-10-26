@@ -159,12 +159,13 @@ drush en backup_migrate -y || true
 # If the repo came with a settings.php file then we'll create a local.settings.php file to be included with 
 # local connection details.
 #
-if [ -f "${DRUPAL_SETTINGS}.bak" ]
-then
-    mv "${DRUPAL_DEFAULT_SETTINGS}" "${DRUPAL_SETTINGS}.bak"
-fi
 mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
+if [ -f "${DRUPAL_SETTINGS}.bak" ]
+then 
+    mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
+else
+    cp ${DRUPAL_DEFAULT_SETTINGS} ${DRUPAL_SETTINGS}
+fi
 
 chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
 includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
@@ -172,7 +173,6 @@ if ! grep "$includestring" ${DRUPAL_SETTINGS};
 then
    source ${startupscripts}/modify_settings_file_1.sh
 fi
-DRUPAL_SETTINGS=$DRUPAL_LOCAL_SETTINGS
 
 #
 # Further modify the drupal settings.php file to set defaults for local environment.
