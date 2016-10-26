@@ -70,7 +70,7 @@ fi
 source ${startupscripts}/git_commands.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
-cd ${SITEROOT}
+cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
 # Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
 # ... as well as variables for our files, private and temp directories, etc.
