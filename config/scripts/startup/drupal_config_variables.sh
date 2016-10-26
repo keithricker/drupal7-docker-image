@@ -9,7 +9,7 @@ drupalsitename=${DRUPAL_SITENAME:-$drupalsitename}
 # If framework variable is set then we'll use this for just about everything.
 FRAMEWORK=${FRAMEWORK:-drupal}
 adminpass=${FRAMEWORK}
-dbname=${FRAMEWORK}
+dbname=${MYSQL_ENV_MYSQL_DATABASE:-$FRAMEWORK}
 
 dbhost=${DB_LINK:-database}
 # dbhost=${MYSQL_PORT_3306_TCP_ADDR:-database}
