@@ -84,7 +84,7 @@ if [ ! -d "$cooldir" ]
 then
   mkdir -fp $cooldir
   chmod 775 $cooldir
-  chown www-data:www-data $cooldir
+  chown -R www-data:www-data $cooldir
 fi
 done
 chmod -R 664 ${DRUPAL_PRIVATE_DIR}
@@ -140,6 +140,8 @@ then
   echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
   echo "" && true
 fi
+
+chown -R www-data:www-data ${DRUPAL_SITE_DIR}
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
 if [ "${IMPORT_EXTERNAL_DB}" ]
