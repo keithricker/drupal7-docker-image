@@ -19,7 +19,7 @@ function grab_git_repo() {
     if [ "$clone_from_git" ]
     then
        echo "cloning from git ... "
-       git clone -b ${branch} ${repo} ${target}
+       rm -rf ${target}/* && git clone -b ${branch} ${repo} ${target}
        replace_codebase 
     fi
     # Otherwise if code exists, then we assume we are pulling instead.
