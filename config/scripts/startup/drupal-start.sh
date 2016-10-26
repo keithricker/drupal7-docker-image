@@ -127,7 +127,7 @@ echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
 echo ""
 
 # If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
-if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; fi
+if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; else true; fi
 
 echo "Attempting to import the database."
 
