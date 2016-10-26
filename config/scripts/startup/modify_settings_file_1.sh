@@ -10,4 +10,4 @@ if (empty(\$drupalenv)) \$drupalenv = \"local\"; \n\
 if (is_readable(dirname(__FILE__) . DIRECTORY_SEPARATOR . \$localsettings)) { \n\
     include dirname(__FILE__) . DIRECTORY_SEPARATOR . \$localsettings; \n\
 }"
-echo "${addthis}" >> ${DRUPAL_SETTINGS}
+echo "${addthis}" >> ${DRUPAL_SETTINGS} && chown www-data ${DRUPAL_SETTINGS}
