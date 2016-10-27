@@ -35,7 +35,7 @@ bash ${startupscripts}/copy_private_key.sh
 source ${startupscripts}/replace_codebase.sh
 
 #If there is already existing code and no git repo is defined, then exit out
-if [ -f "${SITEROOT}/modules/node.module" ]; then drupal_files_exist=true; fi
+if [ -f "${SITEROOT}/modules/node/node.module" ]; then drupal_files_exist=true; fi
 if [ -f "${SITEROOT}/sites/default/local.settings.php" ]; then drupal_already_configured=true; fi
 if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 
