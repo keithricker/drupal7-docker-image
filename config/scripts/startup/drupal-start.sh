@@ -160,7 +160,7 @@ else
            echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
            echo "" && true
         fi
-        rm setting.php && mv settings.php.bak settings.php
+        rm setting.php || true && mv settings.php.bak settings.php
     else 
         drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
     fi
