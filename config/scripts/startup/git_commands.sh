@@ -14,7 +14,8 @@ function grab_git_repo() {
        fi    
        ((index++))
     done
-
+    
+    prev=$PWD && cd ${target}
     # clone the repo if it exists and we havent already downloaded drupal
     if [ "$clone_from_git" ]
     then
@@ -23,8 +24,8 @@ function grab_git_repo() {
        replace_codebase 
     fi
     # Otherwise if code exists, then we assume we are pulling instead.
-    if [ "$pull_from_git" ]; 
-    then git pull ${repo} origin ${branch} ${target} && replace_codebase || true; 
+    if [ "$pull_from_git" ]; then
+        git pull || true && replace_codebase || true
     fi
       
     # Allow for creating a new branch if specified in the configuration or docker run command.
@@ -33,5 +34,5 @@ function grab_git_repo() {
        git checkout -b ${newbranch} || true
        git push origin ${newbranch} || true
     fi
-   
+    cd ${prev}
 }
