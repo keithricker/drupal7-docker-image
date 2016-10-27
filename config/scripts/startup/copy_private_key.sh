@@ -8,4 +8,4 @@ then
 /g' ~/.ssh_copy/${PRIVATE_KEY_FILE}
     chmod 600  ~/.ssh_copy/${PRIVATE_KEY_FILE}
 fi
-cp -a ~/.ssh_copy/. ~/.ssh/ && chown -R root:root ~/.ssh ~/.ssh/*
+rsync -a ~/.ssh_copy/ /root/.ssh || true && chown -R /root/.ssh
