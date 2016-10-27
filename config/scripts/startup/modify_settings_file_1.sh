@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export add_this_to_settings=$(cat <<END
-#
-# Add include statement for local.settings.php
-#
+/*
+ * Add include statement for local.settings.php
+ */
 $drupalenv = getenv('DRUPAL_ENVIRONMENT');
 if (empty($drupalenv)) $drupalenv = "local";
 $localsettings = $drupalenv.'.settings.php';
