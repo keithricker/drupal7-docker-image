@@ -144,6 +144,9 @@ cp ${hostscripts}/local.settings.php local.settings.php && chown www-data:www-da
 
 echo "Attempting to import the database."
 
+# Temporarily rename drush directory so it's configuration doesn't interfere with installing site.
+if [ -d "drush" ]; then mv drush drush_bk; fi;
+
 if [ "$dir" != "default" ]; 
 then
     sed -i -e -c 's/$src['\''MYSQL_ENV_MYSQL_DATABASE'\'']/'${dbname}'/g' local.settings.php
@@ -174,6 +177,9 @@ then
    echo "Attempting to import the database."
    source ${startupscripts}/import_external_db.sh
 fi
+
+# Bring back the drush directory now that we're done installing site.
+if [ -d "drush.bak" ]; then mv drush.bak drush;
 
 echo "Just got done installing site ... "
 
