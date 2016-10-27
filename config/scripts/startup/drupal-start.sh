@@ -140,7 +140,7 @@ if ! grep "$includestring" ${DRUPAL_SETTINGS};
 then
    source ${startupscripts}/modify_settings_file_1.sh
 fi
-cp ${hostscripts}/local.settings.php local.settings.php && chown www-data:www-data local.settings.php
+cp ${hostscripts}/../local.settings.php local.settings.php && chown www-data:www-data local.settings.php
 
 echo "Attempting to import the database."
 
