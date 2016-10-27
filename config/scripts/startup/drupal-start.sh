@@ -78,7 +78,7 @@ source ${startupscripts}/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
-for cooldir in ${bunchoders[@]};
+for cooldir in ${bunchodirs[@]};
 do
 if [ ! -d "$cooldir" ]
 then
@@ -109,11 +109,13 @@ then
 fi
 if [ "${dir}" != "default" ]
 then
-  var=$dir
-  nodot=${var//.}
-  nouscore=${nodot//_}
-  dbname=$nouscore
-  drupalsitename=drupalsitename-${dbname}
+   var=$dir
+   nodot=${var//.}
+   nouscore=${nodot//_}
+   dbname=$nouscore
+   drupalsitename=drupalsitename-${dbname}
+else
+   source ${startupscripts}/drupal_config_variables.sh
 fi
 
 #
@@ -129,16 +131,39 @@ echo ""
 # If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
 if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; else true; fi
 
+if [ ! -f "${DRUPAL_SETTINGS}" ]; then 
+    cp -rp ../default/default.settings.php settings.php
+fi
+
+includestring="\$localsettings = \$drupalenv.'.settings.php"
+if ! grep "$includestring" ${DRUPAL_SETTINGS};
+then
+   source ${startupscripts}/modify_settings_file_1.sh
+fi
+cp ${hostscripts}/local.settings.php local.settings.php && chown www-data:www-data local.settings.php
+
 echo "Attempting to import the database."
 
-if [ "$dir" != "default" ]; then drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true; fi
-
-if [ -f "${DRUPAL_SETTINGS}" ]; then mv ${DRUPAL_SETTINGS} ${DRUPAL_SETTINGS}.bak; fi
-
-if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes
+if [ "$dir" != "default" ]; 
 then
-  echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
-  echo "" && true
+    sed -i -e -c 's/$src['\''MYSQL_ENV_MYSQL_DATABASE'\'']/'${dbname}'/g' local.settings.php
+    cd ../default && drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
+    if [ -z $IMPORT_EXTERNAL_DB ]; then
+        if [ ! -f "defaultdb.sql" ]; then drush sql-dump --result-file=defaultdb.sql || true; fi
+        cd ../${dir} && drush sql-cli < ../default/defaultdb.sql || true;
+    fi
+else
+    if [ -z $IMPORT_EXTERNAL_DB ]; then 
+        mv settings.php settings.php.bak
+        if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes
+        then
+           echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
+           echo "" && true
+        fi
+        rm setting.php && mv settings.php.bak settings.php
+    else 
+        drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
+    fi
 fi
 
 chown -R www-data:www-data ${DRUPAL_SITE_DIR}
@@ -156,30 +181,7 @@ echo "Just got done installing site ... "
 echo "Enabling backup and migrate module .... "
 drush en backup_migrate -y || true
 
-#
-# If the repo came with a settings.php file then we'll create a local.settings.php file to be included with 
-# local connection details.
-#
-mv ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-if [ -f "${DRUPAL_SETTINGS}.bak" ]
-then 
-    mv ${DRUPAL_SETTINGS}.bak ${DRUPAL_SETTINGS}
-else
-    cp -rp ${DRUPAL_DEFAULT_SETTINGS} ${DRUPAL_SETTINGS}
-fi
-
 chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
-includestring="\$localsettings = \$drupalenv.'.settings.php" ${DRUPAL_SETTINGS};
-if ! grep "$includestring" ${DRUPAL_SETTINGS};
-then
-   source ${startupscripts}/modify_settings_file_1.sh
-fi
-
-#
-# Further modify the drupal settings.php file to set defaults for local environment.
-# Otherwise, if we import the production database, we wil be stuck with settings production is using.
-#
-source ${startupscripts}/modify_settings_file_2.sh
 
 echo
 echo "      Drupal is now configured"
