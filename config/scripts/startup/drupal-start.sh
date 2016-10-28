@@ -78,7 +78,7 @@ source ${startupscripts}/drupal_config_variables.sh
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
-for cooldir in ${bunchodirs[@]};
+for cooldir in "${bunchodirs[@]}";
 do
 if [ ! -d "$cooldir" ]
 then
@@ -179,7 +179,7 @@ then
 fi
 
 # Bring back the drush directory now that we're done installing site.
-if [ -d "drush.bak" ]; then mv drush.bak drush;
+if [ -d "drush.bak" ]; then mv drush.bak drush; fi
 
 echo "Just got done installing site ... "
 
@@ -199,7 +199,7 @@ echo "      Drupal admin login: admin"
 echo "   Drupal admin password: $adminpass"
 echo 
 echo "Don't forget to change your drupal admin password!"
-echo
+echo ""
 done
 
 cd ${SITEROOT}
