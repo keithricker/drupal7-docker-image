@@ -14,7 +14,7 @@ array (
     'database' => $src['MYSQL_ENV_MYSQL_DATABASE'],
     'username' => $src['MYSQL_ENV_MYSQL_USER'],
     'password' => $src['MYSQL_ENV_MYSQL_PASSWORD'],
-    'host' => $src['MYSQL_PORT_3306_TCP_ADDRESS'],
+    'host' => $src['MYSQL_PORT_3306_TCP_ADDR'],
     'port' => $src['MYSQL_PORT_3306_TCP_PORT'],
     'driver' => 'mysql',
     'prefix' => '',
