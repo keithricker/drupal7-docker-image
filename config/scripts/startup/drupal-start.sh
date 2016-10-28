@@ -180,7 +180,7 @@ then
 fi
 
 # Bring back the drush directory now that we're done installing site.
-if [ -d "drush.bak" ]; then mv drush.bak drush; fi
+if [ -d "drush_bk" ]; then mv drush_bk drush; fi
 
 echo "Just got done installing site ... "
 
