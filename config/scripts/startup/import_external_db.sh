@@ -1,11 +1,17 @@
 #!/bin/bash
 # Fetch the remote database
 
+# Get the document root of the remote server if it doesn't exist as an environment variable
+if [ -z $EXTERNAL_DB_SRC_SITEROOT ]; then
+   greping=$(grep "Document Root " /etc/apache2 -R | sed -n '1 p')
+   export EXTERNAL_DB_SRC_SITEROOT=${greping#*DocumentRoot} | xargs
+fi
+
 # Get the file name of the latest backup from backup and migrate. I'm sure there is a less verbose way of doing this,
 # but unfortunately I'm not much of a bash expert.
 
 # Navigate to the corresponding "site" directory
-remotecommand = "cd ${EXTERNAL_DB_SRC_SITEROOT}/sites/$dir && "
+remotecommand="cd ${EXTERNAL_DB_SRC_SITEROOT}/sites/$dir && "
 # 1. Start by calling drush bam-backups to get a list of backup files and grab just the first line of those results.
 remotecommand+="firstline=\$(drush bam-backups | sed -n '2p' | xargs) &&"
 # 2. Get just the file name from the first line of results
