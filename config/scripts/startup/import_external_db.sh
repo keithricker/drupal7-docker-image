@@ -3,8 +3,14 @@
 
 # Get the document root of the remote server if it doesn't exist as an environment variable
 if [ -z $EXTERNAL_DB_SRC_SITEROOT ]; then
-   greping=$(grep "Document Root " /etc/apache2 -R | sed -n '1 p')
-   export EXTERNAL_DB_SRC_SITEROOT=${greping#*DocumentRoot} | xargs
+   if [ -d "/etc/apache2" ]; then 
+      greping=$(grep "Document Root " /etc/apache2 -R | sed -n '1 p')
+      export EXTERNAL_DB_SRC_SITEROOT=${greping#*DocumentRoot} | xargs   
+   fi
+   if [ -d "/etc/nginx" ]; then
+      greping=$(grep "root " /etc/nginx/sites-enabled -R | sed -n '1 p')
+      export EXTERNAL_DB_SRC_SITEROOT=${greping#*root} | xargs
+   fi
 fi
 
 # Get the file name of the latest backup from backup and migrate. I'm sure there is a less verbose way of doing this,
