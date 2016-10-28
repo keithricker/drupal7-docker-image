@@ -70,7 +70,7 @@ fi
 source ${startupscripts}/git_commands.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
-cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
+cd ${SITEROOT} && chown www-data:www-data ${SITEROOT}
 
 # Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
 # ... as well as variables for our files, private and temp directories, etc.
@@ -91,6 +91,9 @@ chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
+# Make sure apache can read/write all files in the directory
+chown www-data:www-data ${dir}
+for fl in ${dir}/*; do if [ -f "$fl" ]; then chown www-data:www-data ${fl}; fi done
 # get the name of the current directory and assign it to dir
 dir=${dir%*/}
 dir=${dir##*/}
@@ -168,8 +171,6 @@ else
         drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
     fi
 fi
-
-chown -R www-data:www-data ${DRUPAL_SITE_DIR}
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
 if [ "${IMPORT_EXTERNAL_DB}" ]
