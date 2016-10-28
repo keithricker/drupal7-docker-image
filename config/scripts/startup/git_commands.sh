@@ -24,7 +24,7 @@ function grab_git_repo() {
        rm -rf ${target:?}/* ${target}/.* || true && git clone -b ${branch} ${repo} .
     else
         # Otherwise if code exists, then we assume we are pulling instead.
-        if [ "$pull_from_git" ]; then git pull || true; fi
+        if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull || true; fi
     fi 
     # Allow for creating a new branch if specified in the configuration or docker run command.
     if [ "$newbranch" ]
