@@ -177,8 +177,9 @@ fi
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   ssh -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP} 'bash -s' < ${startupscripts}/fetch_external_db.sh
-   scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP}:${LATEST_FILE} ~/mysql-dump-file.sql
+   source ${startupscripts}/fetch_external_db.sh
+   fetch_external_db ~/mysql-dump-file.sql || true && chown www-data:www-data ~/mysql-dump-file || true
+   
    if drush sql-cli < ~/my-sql-dump-file.sql; 
    then 
       echo "Database import successful" && continue
