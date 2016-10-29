@@ -14,7 +14,7 @@ function get_external_db_siteroot {
 if [ -z $EXTERNAL_DB_SITEROOT ]; then get_external_db_siteroot; fi
 
 # Get the file name of the latest backup from backup and migrate. 
-cd ${EXTERNAL_DB_SRC_SITEROOT}/sites/$dir
+cd ${EXTERNAL_DB_SRC_SITEROOT}/sites/$DIR
 # 1. Start by calling drush bam-backups to get a list of backup files and grab just the first line of those results.
 firstline=$(drush bam-backups | sed -n '2p' | xargs)
 # 2. Get just the file name from the first line of results
