@@ -3,7 +3,7 @@
 
 function get_external_db_siteroot {
    if [ -d "/etc/apache2" ]; then 
-      greping=$(grep "Document Root " /etc/apache2 -R | sed -n '1 p')
+      greping=$(grep "DocumentRoot " /etc/apache2 -R | sed -n '1 p')
       export EXTERNAL_DB_SITEROOT=${greping#*DocumentRoot} | xargs   
    fi
    if [ -d "/etc/nginx" ]; then
