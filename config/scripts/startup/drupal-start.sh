@@ -150,7 +150,7 @@ if [ -d "drush" ]; then mv drush drush_bk; fi;
 if [ "$dir" != "default" ]; 
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
-    revisedsettings=$(sed "s/\$src\[\'MYSQL_ENV_MYSQL_DATABASE\']/${dbname}/"<<<"$(cat local.settings.php)")
+    revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/${dbname}/"<<<"$(cat local.settings.php)")
     echo "$revisedsettings" > local.settings.php
     
     cd ../default && drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
