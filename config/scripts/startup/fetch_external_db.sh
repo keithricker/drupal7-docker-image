@@ -4,11 +4,11 @@
 function get_external_db_siteroot {
    if [ -d "/etc/apache2" ]; then 
       greping=$(grep "DocumentRoot " /etc/apache2 -R | sed -n '1 p')
-      export EXTERNAL_DB_SITEROOT=${greping#*DocumentRoot} | xargs   
+      export EXTERNAL_DB_SITEROOT=$( echo ${greping#*DocumentRoot} | xargs )
    fi
    if [ -d "/etc/nginx" ]; then
       greping=$(grep "root " /etc/nginx/sites-enabled -R | sed -n '1 p')
-      export EXTERNAL_DB_SITEROOT=${greping#*root} | xargs
+      export EXTERNAL_DB_SITEROOT=$( echo ${greping#*root} | xargs )
    fi
 }
 if [ -z $EXTERNAL_DB_SITEROOT ]; then get_external_db_siteroot; fi
