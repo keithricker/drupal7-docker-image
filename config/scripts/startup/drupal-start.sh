@@ -91,6 +91,7 @@ chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
+export DIR=$dir
 # get the name of the current directory and assign it to dir
 dir=${dir%*/}
 dir=${dir##*/}
