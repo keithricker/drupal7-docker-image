@@ -203,7 +203,7 @@ echo "Don't forget to change your drupal admin password!"
 echo ""
 done
 
-cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT} && chmod 775 -R sites/all/libraries
+cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT} && chmod 775 -R sites/all/libraries || true
 
 # Additional commands can be added by an environment variable
 echo "Checking for additional command ... "
