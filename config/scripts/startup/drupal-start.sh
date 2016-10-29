@@ -176,7 +176,14 @@ fi
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   source ${startupscripts}/import_external_db.sh
+   ssh -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP} 'bash -s' < ${startupscripts}/fetch_external_db.sh
+   scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP}:${LATEST_FILE} ~/mysql-dump-file.sql
+   if drush sql-cli < ~/my-sql-dump-file.sql; 
+   then 
+      echo "Database import successful" && continue
+   else 
+      echo "Database import unseccessful. Most likely the result of my code sucking."
+   fi
 fi
 
 # Bring back the drush directory now that we're done installing site.
