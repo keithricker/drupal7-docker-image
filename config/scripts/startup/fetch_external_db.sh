@@ -22,10 +22,18 @@ function fetch_external_db_path {
    # Get the file name of the latest backup from backup and migrate. 
    cd ${EXTERNAL_DB_SRC_SITEROOT}/sites/$DIR
    # 1. Start by calling drush bam-backups to get a list of backup files and grab just the first line of those results.
-   firstline=\$( drush bam-backups | awk 'FNR == 2 {print}' | xargs )
+   firstline=\$( drush bam-backups | awk "FNR == 2 {print}" | xargs )
    # 2. Get just the file name from the first line of results
    set -- \$firstline && backupfile=\$1
    # 3. Get the full, absolute path to that file
-   readlink -f \$(find files/private/backup_migrate -name \${backupfile})
+   readlink=\$( readlink -f \$(find files/private/backup_migrate -name \${backupfile}) )
+   if [ -f \$readlink ]; then echo \$readlink; fi
    '"))
 }
+
+function fetch_external_db {
+   local target=$1
+   if [ -z ${LATESTFILE} ]; then fetch_external_db_path; fi
+   scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP}:${LATEST_FILE} ${target} || true
+}
+
