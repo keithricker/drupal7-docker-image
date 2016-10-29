@@ -113,7 +113,7 @@ then
    nodot=${var//.}
    nouscore=${nodot//_}
    dbname=$nouscore
-   drupalsitename=drupalsitename-${dbname}
+   drupalsitename=$drupalsitename-${dbname}
 else
    source ${startupscripts}/drupal_config_variables.sh
 fi
