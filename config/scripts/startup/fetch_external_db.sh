@@ -34,6 +34,6 @@ function fetch_external_db_path {
 function fetch_external_db {
    local target=$1
    if [ -z ${LATESTFILE} ]; then fetch_external_db_path; fi
-   scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP}:${LATEST_FILE} ${target} || true
+   scp -i ~/.ssh/${PRIVATE_KEY_FILE} ${EXTERNAL_DB_USER}@${EXTERNAL_DB_SRC_IP}:${LATESTFILE} ${target} || true
 }
 
