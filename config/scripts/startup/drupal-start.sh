@@ -3,6 +3,7 @@
 echo "entering the start script ...."
 
 # Copy shared files from server container to docker host machine for sharing
+hostconfig=/root/host_app_config
 hostscripts=/root/host_app/config/scripts
 localscripts=/root/config/scripts
 startupscripts=${hostscripts}/startup
@@ -177,17 +178,17 @@ fi
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   if [ ! -f "~/mysql-dump-file.sql" ]; then 
+   if [ ! -f "${hostconfig}/mysql-dump-file.sql" ]; then 
       source ${startupscripts}/fetch_external_db.sh
-      fetch_external_db ~/mysql-dump-file.sql || true && chown www-data:www-data ~/mysql-dump-file.sql || true
+      fetch_external_db ${hostconfig}/mysql-dump-file.sql || true && chown www-data:www-data ${hostconfig}/mysql-dump-file.sql || true
    fi
-   if drush sql-cli < ~/my-sql-dump-file.sql; 
+   if drush sql-cli < ${hostconfig}/my-sql-dump-file.sql; 
    then 
       echo "Database import successful" && continue
    else 
       echo "Database import unseccessful. Most likely the result of my code sucking."
    fi
-   rm ~/mysql-dump-file.sql || true
+   rm ${hostconfig}/mysql-dump-file.sql || true
 fi
 
 # Bring back the drush directory now that we're done installing site.
