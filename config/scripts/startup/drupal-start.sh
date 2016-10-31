@@ -177,15 +177,17 @@ fi
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   source ${startupscripts}/fetch_external_db.sh
-   fetch_external_db ~/mysql-dump-file.sql || true && chown www-data:www-data ~/mysql-dump-file || true
-   
+   if [ ! -f "~/mysql-dump-file.sql" ]; then 
+      source ${startupscripts}/fetch_external_db.sh
+      fetch_external_db ~/mysql-dump-file.sql || true && chown www-data:www-data ~/mysql-dump-file.sql || true
+   fi
    if drush sql-cli < ~/my-sql-dump-file.sql; 
    then 
       echo "Database import successful" && continue
    else 
       echo "Database import unseccessful. Most likely the result of my code sucking."
    fi
+   rm ~/mysql-dump-file.sql || true
 fi
 
 # Bring back the drush directory now that we're done installing site.
