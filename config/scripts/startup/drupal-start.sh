@@ -3,7 +3,7 @@
 echo "entering the start script ...."
 
 # Copy shared files from server container to docker host machine for sharing
-hostconfig=/root/host_app_config
+hostconfig=/root/host_app/config
 hostscripts=/root/host_app/config/scripts
 localscripts=/root/config/scripts
 startupscripts=${hostscripts}/startup
