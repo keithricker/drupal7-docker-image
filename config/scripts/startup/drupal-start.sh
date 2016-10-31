@@ -155,7 +155,7 @@ then
     revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/'${dbname}'/"<<<"$(cat local.settings.php)")
     echo "$revisedsettings" > local.settings.php
     
-    cd ../default && drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
+    cd ../default && drush sql-create --db-su=$dbuname --db-su-pw=$dbpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
     if [ -z $IMPORT_EXTERNAL_DB ]; then
         if [ ! -f "defaultdb.sql" ]; then drush sql-dump --result-file=defaultdb.sql || true; fi
         cd ../${dir} && drush sql-cli < ../default/defaultdb.sql || true;
@@ -170,7 +170,7 @@ else
         fi
         rm setting.php || true && mv settings.php.bak settings.php
     else 
-        drush sql-create --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
+        drush sql-create --db-su=$dbuname --db-su-pw=$dbpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
     fi
 fi
 
