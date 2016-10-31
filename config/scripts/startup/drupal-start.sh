@@ -184,7 +184,7 @@ then
    fi
    if drush sql-cli < ${hostconfig}/my-sql-dump-file.sql; 
    then 
-      echo "Database import successful" && continue
+      echo "Database import successful"
    else 
       echo "Database import unseccessful. Most likely the result of my code sucking."
    fi
