@@ -121,6 +121,7 @@ else
 fi
 
 export MYSQL_URL=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname
+export MYSQL_ROOT_CREDS="--db-su=$dbuname --db-su-pw=$dbpass"
 
 #
 # Install the site
@@ -149,49 +150,40 @@ cp ${hostscripts}/../local.settings.php local.settings.php && chown www-data:www
 echo "Attempting to import the database."
 
 # Temporarily rename drush directory so it's configuration doesn't interfere with installing site.
-if [ -d "drush" ]; then mv drush drush_bk; fi;
+if [ -d "drush" ]; then mv drush drush_bk && drush cc drush; fi;
 
 if [ "$dir" != "default" ]; 
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
     revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/'${dbname}'/"<<<"$(cat local.settings.php)")
     echo "$revisedsettings" > local.settings.php
-    
-    cd ../default && drush sql-create --db-su=$dbuname --db-su-pw=$dbpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
-    if [ -z $IMPORT_EXTERNAL_DB ]; then
-        if [ ! -f "defaultdb.sql" ]; then drush sql-dump --result-file=defaultdb.sql || true; fi
-        cd ../${dir} && drush sql-cli < ../default/defaultdb.sql || true;
-    fi
-else
-    if [ -z $IMPORT_EXTERNAL_DB ]; then 
-        mv settings.php settings.php.bak 
-        
-        if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-su=root --db-su-pw=${MYSQL_ROOT_PASSWORD} --db-url=${MYSQL_URL}
-        then
-           echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
-           echo "" && true
-        fi
-        rm setting.php || true && mv settings.php.bak settings.php
-    else 
-        drush sql-create --db-su=root --db-su-pw=${MYSQL_ROOT_PASSWORD} --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
-    fi
 fi
+    
+mv settings.php settings.php.bak 
+
+if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} -yes
+then
+   echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
+   echo "" && true
+fi
+rm setting.php || true && mv settings.php.bak settings.php
+
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   if [ ! -f "${hostconfig}/mysql-dump-file.sql" ]; then 
+   if [ ! -d "${hostconfig}/mysql/import/$dir" ]; then mkdir -p ${hostconfig}/mysql/import/$dir; fi
+   if [ ! -f "${hostconfig}/mysql/import/$dir/mysql-dump-file.sql" ]; then 
       source ${startupscripts}/fetch_external_db.sh
-      fetch_external_db ${hostconfig}/mysql-dump-file.sql || true && chown www-data:www-data ${hostconfig}/mysql-dump-file.sql || true
+      fetch_external_db ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql || true && chown -R www-data:www-data ${hostconfig}/mysql/import/$dir || true
    fi
-   if drush sql-cli < ${hostconfig}/my-sql-dump-file.sql; 
+   if drush sql-cli < ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql; 
    then 
       echo "Database import successful"
    else 
       echo "Database import unseccessful. Most likely the result of my code sucking." && true
    fi
-   rm ${hostconfig}/mysql-dump-file.sql || true
 fi
 
 # Bring back the drush directory now that we're done installing site.
