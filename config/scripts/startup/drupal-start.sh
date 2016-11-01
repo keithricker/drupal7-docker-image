@@ -120,6 +120,8 @@ else
    source ${startupscripts}/drupal_config_variables.sh
 fi
 
+export MYSQL_URL=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname
+
 #
 # Install the site
 # Drush won't install the site if there is an existing settings.php file. So we'll do this as a work-around
@@ -162,15 +164,16 @@ then
     fi
 else
     if [ -z $IMPORT_EXTERNAL_DB ]; then 
-        mv settings.php settings.php.bak
-        if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes
+        mv settings.php settings.php.bak 
+        
+        if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --db-su=root --db-su-pw=${MYSQL_ROOT_PASSWORD} --db-url=${MYSQL_URL}
         then
            echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
            echo "" && true
         fi
         rm setting.php || true && mv settings.php.bak settings.php
     else 
-        drush sql-create --db-su=$dbuname --db-su-pw=$dbpass --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
+        drush sql-create --db-su=root --db-su-pw=${MYSQL_ROOT_PASSWORD} --db-url=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname --yes || true;
     fi
 fi
 
@@ -186,7 +189,7 @@ then
    then 
       echo "Database import successful"
    else 
-      echo "Database import unseccessful. Most likely the result of my code sucking."
+      echo "Database import unseccessful. Most likely the result of my code sucking." && true
    fi
    rm ${hostconfig}/mysql-dump-file.sql || true
 fi
@@ -222,7 +225,7 @@ echo "Checking for additional command ... "
 if [[ "$ADDITIONAL_COMMAND" != "" && "$ADDITIONAL_COMMAND" != "null" ]]
 then
     echo "Running additional command ..."
-    y=`eval $ADDITIONAL_COMMAND`
+    y=$(eval $ADDITIONAL_COMMAND)
     echo $y
 fi
 
