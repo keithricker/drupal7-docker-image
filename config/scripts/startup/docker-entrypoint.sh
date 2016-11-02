@@ -89,7 +89,7 @@ fi
 done
 chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 
-source ${startupscripts}/install_drupal.sh
+if [ "$drupal_already_configured" != "true" ]; then source ${startupscripts}/install_drupal.sh; fi
 
 cd ${SITEROOT} && chown -R 1 ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
