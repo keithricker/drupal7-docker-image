@@ -25,6 +25,8 @@ fi
 
 # Edit apache config files to listen on port specified in env variable.
 bash /root/host_app/config/apache/set_listen_port.sh
+apache2-foreground
+
 # Start memcache
 service memcached start || true
 
