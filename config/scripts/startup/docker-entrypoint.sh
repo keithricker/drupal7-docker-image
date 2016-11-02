@@ -75,10 +75,6 @@ grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -ne
 
 cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
-# Getting ready to install drupal. First we'll define a bunch of default variables, including database credentials, etc.
-# ... as well as variables for our files, private and temp directories, etc.
-source ${startupscripts}/drupal_config_variables.sh
-
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
 for cooldir in "${bunchodirs[@]}";
