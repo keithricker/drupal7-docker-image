@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -a
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
