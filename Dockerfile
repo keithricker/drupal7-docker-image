@@ -45,16 +45,6 @@ ENV PHP_EXT_DIR /usr/src/php/ext
 RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached &&\
     docker-php-ext-install memcached
 
-# Install Apache Solr
-RUN apt-get -y install openjdk-7-jre 
-RUN apt-get -y install openjdk-7-jdk
-RUN mkdir /usr/java
-RUN ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
-RUN apt-get -y install solr-tomcat
-# Solr configuration can be done by visiting: localhost:8080/solr
-# Add configuration volume for solr
-# VOLUME ["/usr/share/solr"]
-
 # Install composer
 WORKDIR /root
 RUN curl -sS https://getcomposer.org/installer | php
