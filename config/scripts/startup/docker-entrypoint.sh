@@ -90,7 +90,7 @@ chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 
 source ${startupscripts}/install_drupal.sh
 
-cd ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
+cd ${SITEROOT} && chown -R 1 ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
 # Additional commands can be added by an environment variable
 echo "Checking for additional command ... "
