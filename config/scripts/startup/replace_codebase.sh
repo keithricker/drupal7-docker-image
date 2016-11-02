@@ -1,4 +1,5 @@
 #!/bin/bash
+set -a
 
 CODEBASEDIR=${SITEROOT}/../codebase
 function replace_codebase {
