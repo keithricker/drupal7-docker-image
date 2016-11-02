@@ -4,7 +4,7 @@ echo "entering the start script ...."
 
 # Copy shared files from server container to docker host machine for sharing
 hostconfig=/root/host_app/config
-hostscripts=/root/host_app/config/scripts
+hostscripts=/root/host_app/config/drupal/scripts
 localscripts=/root/config/scripts
 startupscripts=${hostscripts}/startup
 CURRENTFILE=$(readlink -f "$0")
@@ -15,7 +15,8 @@ CURRENTDIR=$(dirname "${CURRENTFILE}")
 if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    rsync -a /root/config /root/host_app || true
+    if [ ! -d "/root/host_app/config/drupal" ]; then mkdir -p /root/host_app/config/drupal; fi
+    rsync -a /root/config/ /root/host_app/config/drupal/ || true 
     bash ${TARGETFILE}
     rm -rf /root/config/* /root/config/.* || true
     mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
