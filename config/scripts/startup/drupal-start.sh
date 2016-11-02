@@ -26,8 +26,6 @@ fi
 bash /root/host_app/config/apache/set_listen_port.sh
 # Start memcache
 service memcached start || true
-# Start Apache Solr
-service tomcat7 start || true
 
 # If there is a private key defined in the env vars, then add it.
 bash ${startupscripts}/copy_private_key.sh
