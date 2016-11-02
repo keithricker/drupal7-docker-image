@@ -1,6 +1,9 @@
 #!/bin/bash
+set -a
 
 # Getting ready to install drupal. 
+# First need to include our variables
+source /root/host_app/config/drupal/scripts/startup/drupal_config_variables.sh
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
