@@ -1,5 +1,6 @@
 #!/bin/bash
 # Fetch the remote database
+set -a
 
 # $ only applies to remote server variables
 function get_external_db_siteroot {
