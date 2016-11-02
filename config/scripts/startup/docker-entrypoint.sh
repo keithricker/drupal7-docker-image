@@ -16,7 +16,7 @@ if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     if [ ! -d "/root/host_app/config/drupal" ]; then mkdir -p /root/host_app/config/drupal; fi
-    rsync -a /root/config/ /root/host_app/config/drupal/ || true 
+    rsync -a --ignore-existing /root/config/ /root/host_app/config/drupal/ || true 
     bash ${TARGETFILE}
     rm -rf /root/config/* /root/config/.* || true
     mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
