@@ -33,7 +33,7 @@ VOLUME ["/root/.ssh_copy"]
 
 #For sharing config files between host and container
 COPY config /root/config
-RUN mkdir -p /root/host_app/config && chmod -R 777 /root/config /root/host_app
+RUN mkdir -p /host_app/config && chmod -R 777 /root/config /host_app
 
 # Here you can set the port that Apache serves from (listens on) 
 ENV APACHE_LISTEN_PORT 80
