@@ -76,7 +76,7 @@ fi
     
 mv settings.php settings.php.bak 
 
-if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} -yes
+if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} --yes
 then
    echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
    echo "" && true
