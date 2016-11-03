@@ -1,4 +1,5 @@
 #!/bin/bash
+set -a
 
 export add_this_to_settings=$(cat <<END
 /*
