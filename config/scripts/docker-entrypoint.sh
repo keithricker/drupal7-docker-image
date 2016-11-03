@@ -25,7 +25,7 @@ then
 fi
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
-bash /host_app/config/apache/apache_start.sh
+bash /host_app/config/drupal/apache/apache_start.sh
 
 # Start memcache
 service memcached start || true
