@@ -32,7 +32,7 @@ then
    dbname=$nouscore
    drupalsitename=$drupalsitename-${dbname}
 else
-   source ${startupscripts}/drupal_config_variables.sh
+   source ${drupalscripts}/drupal_config_variables.sh
 fi
 
 export MYSQL_URL=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname
