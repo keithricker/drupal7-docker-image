@@ -19,6 +19,8 @@ if [ ! -d "/host_app/config/drupal" ]; then
         exit 0
     fi
     mkdir -p /host_app/config/drupal;
+fi
+if [ -d "/root/config" ]; then
     rsync -a -u /root/config/ /host_app/config/drupal || true 
     rm -rf /root/config || true
     rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
