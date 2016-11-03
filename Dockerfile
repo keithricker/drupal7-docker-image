@@ -63,4 +63,5 @@ WORKDIR /var/www/html
 
 EXPOSE 8080 8088
 
-CMD bash /root/config/scripts/startup/docker-entrypoint.sh
+RUN ln -s /root/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+CMD ["docker-entrypoint"]
