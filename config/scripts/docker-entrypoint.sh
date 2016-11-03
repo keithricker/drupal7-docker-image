@@ -3,9 +3,6 @@ set -a
 
 echo "entering the start script ...."
 
-# Define a bunch of variables
-source /root/config/scripts/drupal_config_variables.sh
-
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
 
@@ -21,6 +18,9 @@ if [ -d "/root/config" ]; then
     rm -rf /root/config || true
     rm /usr/local/bin/docker-entrypoint && ln -s ${hostscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 fi
+
+# Define a bunch of variables
+source /host_app/config/drupal/scripts/drupal_config_variables.sh
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
 bash /host_app/config/drupal/apache/apache_start.sh
