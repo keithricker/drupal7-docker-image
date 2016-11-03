@@ -16,7 +16,7 @@ fi
 if [ -d "/root/config" ]; then
     rsync -a -u /root/config/ /host_app/config/drupal || true 
     rm -rf /root/config || true
-    rm /usr/local/bin/docker-entrypoint && ln -s ${hostscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+    rm /usr/local/bin/docker-entrypoint && ln -s ${drupalscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 fi
 
 # Define a bunch of variables
@@ -29,10 +29,10 @@ bash /host_app/config/drupal/apache/apache_start.sh
 service memcached start || true
 
 # If there is a private key defined in the env vars, then add it.
-bash ${hostscripts}/copy_private_key.sh
+bash ${drupalscripts}/copy_private_key.sh
 
 # Include the replace_codebase function.
-source ${hostscripts}/replace_codebase.sh
+source ${drupalscripts}/replace_codebase.sh
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node/node.module" ]; then drupal_files_exist=true; fi
@@ -67,7 +67,7 @@ then
 fi
 
 # Clone or pull our repo from GIT, etc.
-source ${hostscripts}/git_commands.sh
+source ${drupalscripts}/git_commands.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
 # create some directories and set permissions
@@ -87,7 +87,7 @@ chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 if [ -z $INSTALL_DRUPAL ]; then
    if [ "$drupal_already_configured" != "true" ]; then INSTALL_DRUPAL=true; fi
 fi
-if [ "$INSTALL_DRUPAL" == "true" ]; then source ${startupscripts}/install_drupal.sh; fi
+if [ "$INSTALL_DRUPAL" == "true" ]; then source ${drupalscripts}/install_drupal.sh; fi
 
 # Surrender ownership of the code
 if [ ! -z $ROOT_GROUP_ID ]; then ownership=${ROOT_USER_ID}:${ROOT_GROUP_ID}; else ownershp=$ROOT_USER_ID; fi
