@@ -93,7 +93,9 @@ if [ -z $INSTALL_DRUPAL ]; then
 fi
 if [ "$INSTALL_DRUPAL" == "true" ]; then source ${startupscripts}/install_drupal.sh; fi
 
-cd ${SITEROOT} && chown -R 1 ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
+# Surrender ownership of the code
+if [ ! -z $ROOT_GROUP_ID ]; then ownership=${ROOT_USER_ID}:${ROOT_GROUP_ID}; else ownershp=$ROOT_USER_ID; fi
+cd ${SITEROOT} && chown -R ${ownership} ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
 # Additional commands can be added by an environment variable
 echo "Checking for additional command ... "
