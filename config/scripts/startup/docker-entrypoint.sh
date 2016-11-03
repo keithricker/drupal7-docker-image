@@ -6,6 +6,11 @@ echo "entering the start script ...."
 # Define a bunch of variables
 source /root/host_app/config/drupal/scripts/startup/drupal_config_variables.sh
 
+CURRENTFILE=$(readlink -f "$0")
+CURRENTFILENAME=$( basename "$0" )
+TARGETFILE=${startupscripts}/${CURRENTFILENAME}
+CURRENTDIR=$(dirname "${CURRENTFILE}")
+
 # Copy shared files from server container to docker host machine for sharing
 
 if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
