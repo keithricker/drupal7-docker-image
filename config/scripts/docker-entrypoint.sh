@@ -14,9 +14,10 @@ if [ ! -d "/host_app/config/drupal" ]; then
     mkdir -p /host_app/config/drupal
 fi
 if [ -d "/root/config" ]; then
+    drupalscripts=/host_app/config/drupal/scripts
     rsync -a -u /root/config/ /host_app/config/drupal || true 
     rm -rf /root/config || true
-    rm /usr/local/bin/docker-entrypoint && cp ${drupalscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+    rm /usr/local/bin/docker-entrypoint && ln -s ${drupalscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 fi
 
 # Define a bunch of variables
