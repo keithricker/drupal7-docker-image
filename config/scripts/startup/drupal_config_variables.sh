@@ -6,10 +6,6 @@ hostconfig=/root/host_app/config
 hostscripts=/root/host_app/config/drupal/scripts
 localscripts=/root/config/scripts
 startupscripts=${hostscripts}/startup
-CURRENTFILE=$(readlink -f "$0")
-CURRENTFILENAME=$( basename "$0" )
-TARGETFILE=${startupscripts}/${CURRENTFILENAME}
-CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
 drupalsitename=${HOSTNAME:-drupal7}
