@@ -20,7 +20,7 @@ then
     rsync -a --ignore-existing /root/config/ /host_app/config/drupal/ || true 
     bash ${TARGETFILE}
     rm -rf /root/config/* /root/config/.* || true
-    mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
+    rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
     exit 0
 fi
 
