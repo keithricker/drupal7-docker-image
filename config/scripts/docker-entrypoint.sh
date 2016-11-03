@@ -6,24 +6,20 @@ echo "entering the start script ...."
 # Define a bunch of variables
 source /root/config/scripts/drupal_config_variables.sh
 
-CURRENTFILE=$(readlink -f "$0")
-CURRENTFILENAME=$( basename "$0" )
-TARGETFILE=${startupscripts}/${CURRENTFILENAME}
-
 # Copy shared files from server container to docker host machine for sharing
-
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
+
 if [ ! -d "/host_app/config/drupal" ]; then
     if [ ! -d "/root/config" ]; then 
         echo "Container is not configured properly. Missing configuration directory."
         exit 0
     fi
-    mkdir -p /host_app/config/drupal;
+    mkdir -p /host_app/config/drupal
 fi
 if [ -d "/root/config" ]; then
     rsync -a -u /root/config/ /host_app/config/drupal || true 
     rm -rf /root/config || true
-    rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
+    rm /usr/local/bin/docker-entrypoint && ln -s ${hostscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 fi
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
