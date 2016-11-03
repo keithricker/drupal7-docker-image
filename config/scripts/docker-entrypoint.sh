@@ -24,7 +24,7 @@ fi
 source /host_app/config/drupal/scripts/drupal_config_variables.sh
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
-bash /host_app/config/drupal/apache/apache_start.sh
+nohup bash /host_app/config/drupal/apache/apache_start.sh || true
 
 # Start memcache
 service memcached start || true
