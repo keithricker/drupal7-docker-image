@@ -2,10 +2,10 @@
 set -a
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
 
-hostconfig=/root/host_app/config
-hostscripts=/root/host_app/config/drupal/scripts
+hostconfig=/host_app/config
+hostscripts=/host_app/config/drupal/scripts
 localscripts=/root/config/scripts
-startupscripts=${hostscripts}/startup
+startupscripts=${hostscripts}
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
 drupalsitename=${HOSTNAME:-drupal7}
