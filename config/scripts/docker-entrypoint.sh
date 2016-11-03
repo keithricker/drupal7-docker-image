@@ -16,7 +16,7 @@ TARGETFILE=${startupscripts}/${CURRENTFILENAME}
 if [ ! -d "/host_app/config/drupal" ]; then 
     mkdir -p /host_app/config/drupal;
     rsync -a -u /root/config/ /host_app/config/drupal || true 
-    rm -r /root/config || true
+    rm -rf /root/config || true
     rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
     exit 0
 fi
