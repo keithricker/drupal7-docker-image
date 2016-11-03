@@ -4,7 +4,7 @@ set -a
 echo "entering the start script ...."
 
 # Define a bunch of variables
-source /host_app/config/drupal/scripts/drupal_config_variables.sh
+source /root/config/scripts/drupal_config_variables.sh
 
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
