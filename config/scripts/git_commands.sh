@@ -27,12 +27,12 @@ function grab_git_repo() {
         if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull || true; fi
     fi 
     # Allow for creating a new branch if specified in the configuration or docker run command.
-    if [ "$newbranch" ]
+    if [ "$newbranch" != "" ]
     then
        git checkout -b ${newbranch} || true
        git push origin ${newbranch} || true
     fi
     
     if [ -f "${CODEBASEDIR}/index.php" ]; then replace_codebase || true; fi
-    cd ${prev}
+    cd ${prev} || true
 }
