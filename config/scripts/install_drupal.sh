@@ -30,12 +30,12 @@ then
    nodot=${var//.}
    nouscore=${nodot//_}
    dbname=$nouscore
-   drupalsitename=$drupalsitename-${dbname}
+   drupalsitename="$drupalsitename-${dbname}"
 else
    source ${drupalscripts}/drupal_config_variables.sh
 fi
 
-export MYSQL_URL=mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname
+export MYSQL_URL="mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname"
 export MYSQL_ROOT_CREDS="--db-su=$dbuname --db-su-pw=$dbpass"
 
 #
