@@ -6,7 +6,6 @@ ROOT_USER_ID=${ROOT_USER_ID:-1}
 
 hostconfig=/host_app/config
 hostscripts=/host_app/config/drupal/scripts
-localscripts=/root/config/scripts
 startupscripts=${hostscripts}
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
