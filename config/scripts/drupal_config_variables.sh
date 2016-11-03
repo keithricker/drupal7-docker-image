@@ -1,6 +1,7 @@
 #!/bin/bash
 set -a
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
+ROOT_USER_ID=${ROOT_USER_ID:-1}
 
 hostconfig=/host_app/config
 hostscripts=/host_app/config/drupal/scripts
