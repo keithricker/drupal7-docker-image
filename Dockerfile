@@ -18,6 +18,7 @@ ENV GIT_BRANCH master
 ENV DRUPAL_SOURCE https://github.com/drupal/drupal.git
 ENV DRUPAL_VERSION 7.x
 
+ENV IMPORT_EXTERNAL_DB false
 # For passing in private key with environment variable
 ENV PRIVATE_KEY_FILE root-aws-key.pem
 
