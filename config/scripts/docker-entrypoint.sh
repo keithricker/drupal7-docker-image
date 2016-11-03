@@ -91,7 +91,6 @@ fi
 if [ "$INSTALL_DRUPAL" == "true" ]; then source ${drupalscripts}/install_drupal.sh; fi
 
 # Surrender ownership of the code
-if [ ! -z $ROOT_GROUP_ID ]; then ownership=${ROOT_USER_ID}:${ROOT_GROUP_ID}; else ownershp=$ROOT_USER_ID; fi
 cd ${SITEROOT} && chown -R ${ownership} ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
 # Additional commands can be added by an environment variable
