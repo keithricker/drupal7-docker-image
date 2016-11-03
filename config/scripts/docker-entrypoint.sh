@@ -9,17 +9,14 @@ source /root/config/scripts/drupal_config_variables.sh
 CURRENTFILE=$(readlink -f "$0")
 CURRENTFILENAME=$( basename "$0" )
 TARGETFILE=${startupscripts}/${CURRENTFILENAME}
-CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 # Copy shared files from server container to docker host machine for sharing
 
-if [ "${CURRENTDIR}" == "${localscripts}" ]
-then
-    # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    if [ ! -d "/host_app/config/drupal" ]; then mkdir -p /host_app/config/drupal; fi
+# Move anything newer from the container to the host, and delete anything in the existing config folder.
+if [ ! -d "/host_app/config/drupal" ]; then 
+    mkdir -p /host_app/config/drupal;
     rsync -a -u /root/config/ /host_app/config/drupal || true 
-    bash ${TARGETFILE}
-    rm -rf /root/config/* /root/config/.* || true
+    rm -r /root/config || true
     rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
     exit 0
 fi
