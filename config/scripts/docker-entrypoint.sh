@@ -17,7 +17,7 @@ if [ "${CURRENTDIR}" == "${localscripts}" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
     if [ ! -d "/host_app/config/drupal" ]; then mkdir -p /host_app/config/drupal; fi
-    rsync -a /root/config/ /host_app/config/drupal/ || true 
+    rsync -a -u /root/config/ /host_app/config/drupal/ || true 
     bash ${TARGETFILE}
     rm -rf /root/config/* /root/config/.* || true
     rm /usr/local/bin/docker-entrypoint && ln -s ${TARGETFILE} /usr/local/bin/docker-entrypoint
