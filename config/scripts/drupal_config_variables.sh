@@ -5,8 +5,8 @@ set -a
 ROOT_USER_ID=${ROOT_USER_ID:-1}
 
 hostconfig=/host_app/config
-hostscripts=/host_app/config/drupal/scripts
-startupscripts=${hostscripts}
+drupalscripts=/host_app/config/drupal/scripts
+startupscripts=${drupalscripts}
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
 drupalsitename=${HOSTNAME:-drupal7}
