@@ -1,6 +1,8 @@
 #!/bin/bash
 set -a
 
+if [ ! -d "${CODEBASEDIR}" ]; then mkdir -p ${CODEBASEDIR} && chown -R www-data:www-data ${CODEBASEDIR}; fi
+
 function replace_codebase {
     if [ -f "$1" ]
     then
