@@ -13,11 +13,11 @@ CURRENTDIR=$(dirname "${CURRENTFILE}")
 
 # Copy shared files from server container to docker host machine for sharing
 
-if [ "${CURRENTDIR}" == "${localscripts}/startup" ]
+if [ "${CURRENTDIR}" == "${localscripts}" ]
 then
     # Move anything newer from the container to the host, and delete anything in the existing config folder.
-    if [ ! -d "/root/host_app/config/drupal" ]; then mkdir -p /root/host_app/config/drupal; fi
-    rsync -a --ignore-existing /root/config/ /root/host_app/config/drupal/ || true 
+    if [ ! -d "/host_app/config/drupal" ]; then mkdir -p /host_app/config/drupal; fi
+    rsync -a --ignore-existing /root/config/ /host_app/config/drupal/ || true 
     bash ${TARGETFILE}
     rm -rf /root/config/* /root/config/.* || true
     mkdir -p ${CURRENTDIR} && cp -f ${TARGETFILE} ${CURRENTFILE} || true
@@ -25,7 +25,7 @@ then
 fi
 
 # Edit apache config files to listen on port specified in env variable.
-bash /root/host_app/config/apache/set_listen_port.sh
+bash /host_app/config/apache/set_listen_port.sh
 apache2-foreground
 
 # Start memcache
