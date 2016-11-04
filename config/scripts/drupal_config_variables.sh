@@ -4,7 +4,7 @@ set -a
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
 ROOT_USER_ID=${ROOT_USER_ID:-"1"}
 ROOT_GROUP_ID=${ROOT_GROUP_ID:-"0"}
-export ownershp="${ROOT_USER_ID}:${ROOT_GROUP_ID}"
+OWNERSHIP="${ROOT_USER_ID}:${ROOT_GROUP_ID}"
 
 hostconfig=/host_app/config
 drupalscripts=/host_app/config/drupal/scripts
