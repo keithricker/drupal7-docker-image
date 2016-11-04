@@ -3,10 +3,6 @@ set -a
 
 echo "entering the start script ...."
 
-# Define a bunch of variables
-drupalscripts=/host_app/config/drupal/scripts
-source ${drupalscripts}/drupal_config_variables.sh
-
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
 
@@ -20,6 +16,10 @@ fi
 if [ -d "/root/config" ]; then    
     rsync -a -u /root/config/ /host_app/config/drupal || true 
 fi
+
+# Define a bunch of variables
+drupalscripts=/host_app/config/drupal/scripts
+source ${drupalscripts}/drupal_config_variables.sh
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
 nohup bash /host_app/config/drupal/apache/apache_start.sh || true
