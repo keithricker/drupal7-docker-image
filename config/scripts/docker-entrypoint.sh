@@ -3,11 +3,6 @@ set -a
 
 echo "entering the start script ...."
 
-# Edit apache config files to listen on port specified in env variable, and start apache.
-nohup bash /host_app/config/drupal/apache/apache_start.sh || true
-# Start memcache
-service memcached start || true
-
 # Define a bunch of variables
 drupalscripts=/host_app/config/drupal/scripts
 source ${drupalscripts}/drupal_config_variables.sh
@@ -25,6 +20,11 @@ fi
 if [ -d "/root/config" ]; then    
     rsync -a -u /root/config/ /host_app/config/drupal || true 
 fi
+
+# Edit apache config files to listen on port specified in env variable, and start apache.
+nohup bash /host_app/config/drupal/apache/apache_start.sh || true
+# Start memcache
+service memcached start || true
 
 # If there is a private key defined in the env vars, then add it.
 bash ${drupalscripts}/copy_private_key.sh
