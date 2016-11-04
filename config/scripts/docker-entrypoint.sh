@@ -83,7 +83,7 @@ fi
 if [ "$INSTALL_DRUPAL" == "true" ]; then source ${drupalscripts}/install_drupal.sh; fi
 
 # Surrender ownership of the code
-cd ${SITEROOT} && chown -R ${ownership} ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
+cd ${SITEROOT} && chown -R ${OWNERSHIP} ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
 
 # Additional commands can be added by an environment variable
 echo "Checking for additional command ... "
