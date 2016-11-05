@@ -110,6 +110,6 @@ fi
 service memcached start || true
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
-nohup /host_app/config/drupal/apache/apache_start.sh || true
+source /host_app/config/drupal/apache/apache_start.sh || true
 true
 
