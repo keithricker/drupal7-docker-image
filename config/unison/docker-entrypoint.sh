@@ -8,6 +8,9 @@ set -a
     eval ${statement}
 done
 
+# Include drupal variables
+source ${drupalscripts}/drupal_config_variables.sh
+
 # Include the replace_codebase function.
 source ${unisonscripts}/replace_codebase.sh
 
