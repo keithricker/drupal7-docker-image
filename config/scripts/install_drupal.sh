@@ -38,18 +38,15 @@ fi
 export MYSQL_URL="mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname"
 export MYSQL_ROOT_CREDS="--db-su=$dbuname --db-su-pw=$dbpass"
 
-#
-# Install the site
-# Drush won't install the site if there is an existing settings.php file. So we'll do this as a work-around
-#
+# If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
 cd ${DRUPAL_SITE_DIR}/$dir
+if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; else true; fi
 
+# Install the site
+#
 echo ""
 echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/$dir"
 echo ""
-
-# If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
-if drush pm-info node --fields=status; then echo "Site is already installed here. Moving along." && continue; else true; fi
 
 if [ ! -f "${DRUPAL_SETTINGS}" ]; then 
     cp -rp ../default/default.settings.php settings.php
@@ -60,29 +57,34 @@ if ! grep "$includestring" ${DRUPAL_SETTINGS};
 then
    source ${drupalscripts}/modify_settings_file_1.sh
 fi
+
 cp ${drupalscripts}/../local.settings.php local.settings.php && chown www-data:www-data local.settings.php
-
-echo "Attempting to import the database."
-
-# Temporarily rename drush directory so it's configuration doesn't interfere with installing site.
-if [ -d "drush" ]; then mv drush drush_bk && drush cc drush; fi;
-
 if [ "$dir" != "default" ]; 
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
     revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/'${dbname}'/"<<<"$(cat local.settings.php)")
     echo "$revisedsettings" > local.settings.php
 fi
-    
-mv settings.php settings.php.bak 
-echo " Using the following command: drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} --yes"
 
-if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} --yes
+echo "Attempting to install the database."
+
+if [ -z $first-site-installed ]; 
 then
-   echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
-   echo "" && true
+   if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} -y
+   then
+      echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
+      echo "" && true
+   else
+      echo "Site successfully installed in sites/$dir"
+      first-site-installed=$dir
+   fi
+else
+   cd ../$first-site-installed && drush sql-dump --result-file=mysqldump.sql
+   drush sql-dump --result-file=mysqldump.sql
+   drush sql-create --db-url=${MYSQL_URL} -y
+   cd ../$dir && drush cc drush || true
+   drush sql-cli --db-url=${MYSQL_URL} < ../$first-site-installed/mysqldump.sql -y
 fi
-rm setting.php || true && mv settings.php.bak settings.php
 
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
@@ -101,11 +103,6 @@ then
       echo "Database import unseccessful. Most likely the result of my code sucking." && true
    fi
 fi
-
-# Bring back the drush directory now that we're done installing site.
-if [ -d "drush_bk" ]; then mv drush_bk drush; fi
-
-echo "Just got done installing site ... "
 
 # Install backup and migrate
 echo "Enabling backup and migrate module .... "
