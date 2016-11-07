@@ -12,6 +12,9 @@ done
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
+# If there is a private key defined in the env vars, then add it. Otherwise, copy over the host app user's private key.
+bash ${busyboxscripts}/copy_private_key.sh
+
 # Include the replace_codebase function.
 source ${busyboxscripts}/replace_codebase.sh
 
