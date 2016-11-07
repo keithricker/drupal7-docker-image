@@ -57,7 +57,7 @@ WORKDIR /root
 
 # Archive contents of the web root and stash it for later
 WORKDIR /var/www
-RUN mkdir codebase && chown -R www-data:www-data codebase && tar -p -zcf codebase/codebase.tar.gz html
+RUN mkdir codebase && chown -R www-data:www-data codebase && rsync -a -u /var/www/html/ /var/www/codebase/ || true 
 ENV CODEBASEDIR /var/www/codebase
 WORKDIR /var/www/html
 
