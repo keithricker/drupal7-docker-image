@@ -11,21 +11,20 @@ if [ ! -d "/host_app/config/drupal" ]; then
         echo "Container is not configured properly. Missing configuration directory."
         exit 0
     fi
-    mkdir -p /host_app/config/drupal
 fi
 if [ -d "/root/config" ]; then    
-    rsync -a -u /root/config/ /host_app/config/drupal || true 
+    rsync -a -u /root/config/ /host_app/config || true 
 fi
 
 # Define a bunch of variables
-drupalscripts=/host_app/config/drupal/scripts
+drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
 # If there is a private key defined in the env vars, then add it.
 bash ${drupalscripts}/copy_private_key.sh
 
 # Include the replace_codebase function.
-source ${drupalscripts}/replace_codebase.sh
+source ${unisonscripts}/replace_codebase.sh
 
 #If there is already existing code and no git repo is defined, then exit out
 if [ -f "${SITEROOT}/modules/node/node.module" ]; then drupal_files_exist=true; fi
@@ -60,7 +59,7 @@ then
 fi
 
 # Clone or pull our repo from GIT, etc.
-source ${drupalscripts}/git_commands.sh
+source ${unisonscripts}/git_commands.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
 # create some directories and set permissions
@@ -80,7 +79,7 @@ chmod -R 664 ${DRUPAL_PRIVATE_DIR}
 if [ -z $INSTALL_DRUPAL ]; then
    if [ "$drupal_already_configured" != "true" ]; then INSTALL_DRUPAL=true; fi
 fi
-if [ "$INSTALL_DRUPAL" == "true" ]; then source ${drupalscripts}/install_drupal.sh; fi
+if [ "$INSTALL_DRUPAL" == "true" ]; then source ${drushscripts}/install_drupal.sh; fi
 
 # Surrender ownership of the code
 cd ${SITEROOT} && chown -R ${OWNERSHIP} ${SITEROOT} && chown -R www-data:www-data ${SITEROOT}
@@ -94,13 +93,6 @@ then
     echo $y
 fi
 
-# Remove drush and composer if not in dev mode
-if [ ! ${DEVELOPMENT_MODE} ]; then
-   rm /usr/bin/drush || true
-   rm /usr/local/bin/composer || true
-   rm -r /root/.composer || true
-fi
-
 if [ -d "/root/config" ]; then
    rm -rf /root/config || true
    rm /usr/local/bin/docker-entrypoint && ln -s ${drupalscripts}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
@@ -110,6 +102,6 @@ fi
 service memcached start || true
 
 # Edit apache config files to listen on port specified in env variable, and start apache.
-source /host_app/config/drupal/apache/apache_start.sh
+source /host_app/config/apache/apache/apache_start.sh
 true
 
