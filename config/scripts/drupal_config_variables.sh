@@ -9,7 +9,7 @@ OWNERSHIP="${ROOT_USER_ID}:${ROOT_GROUP_ID}"
 hostconfig=/host_app/config
 drupalscripts=/host_app/config/scripts
 drushscripts=/host_app/config/drush
-unisonscripts=/host_app/config/unison
+busyboxscripts=/host_app/config/busybox
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
 drupalsitename=${HOSTNAME:-drupal7}
