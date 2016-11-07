@@ -52,7 +52,6 @@ RUN mv /root/composer.phar /usr/local/bin/composer
 
 # Install Drush 7.
 WORKDIR /root/.composer
-RUN composer global require drush/drush:7.*
 RUN composer global update
 WORKDIR /root
 RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
