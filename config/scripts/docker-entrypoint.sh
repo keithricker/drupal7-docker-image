@@ -16,6 +16,8 @@ if [ -d "/root/config" ]; then
     rsync -a -u /root/config/ /host_app/config || true 
 fi
 
+rsync -a -u /var/www/codebase/ /host_app/code/ || true 
+
 # Define a bunch of variables
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
