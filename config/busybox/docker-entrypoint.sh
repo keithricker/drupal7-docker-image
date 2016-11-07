@@ -9,6 +9,7 @@ set -a
 done
 
 # Include drupal variables
+drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
 # Include the replace_codebase function.
