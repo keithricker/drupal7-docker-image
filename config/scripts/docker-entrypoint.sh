@@ -20,6 +20,9 @@ fi
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
+if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
+    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
+fi
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
