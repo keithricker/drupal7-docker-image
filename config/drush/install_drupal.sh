@@ -3,7 +3,7 @@ set -a
 
 # Getting ready to install drupal. 
 # First need to include our variables
-source /host_app/config/drupal/scripts/drupal_config_variables.sh
+source /host_app/config/scripts/drupal_config_variables.sh
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
@@ -55,7 +55,7 @@ fi
 includestring="\$localsettings = \$drupalenv.'.settings.php"
 if ! grep "$includestring" ${DRUPAL_SETTINGS};
 then
-   source ${drupalscripts}/modify_settings_file_1.sh
+   source ${drushscripts}/modify_settings_file_1.sh
 fi
 
 cp ${drupalscripts}/../local.settings.php local.settings.php && chown www-data:www-data local.settings.php
@@ -92,7 +92,7 @@ then
    echo "Attempting to import the database."
    if [ ! -d "${hostconfig}/mysql/import/$dir" ]; then mkdir -p ${hostconfig}/mysql/import/$dir; fi
    if [ ! -f "${hostconfig}/mysql/import/$dir/mysql-dump-file.sql" ]; then 
-      source ${drupalscripts}/fetch_external_db.sh
+      source ${drushscripts}/fetch_external_db.sh
       fetch_external_db ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql || true && chown -R www-data:www-data ${hostconfig}/mysql/import/$dir || true
    fi
    if drush sql-cli < ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql; 
