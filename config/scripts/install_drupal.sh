@@ -80,7 +80,6 @@ then
    fi
 else
    cd ../$first_site_installed && drush sql-dump --result-file=mysqldump.sql
-   drush sql-dump --result-file=mysqldump.sql
    drush sql-create --db-url=${MYSQL_URL} -y
    cd ../$dir && drush cc drush || true
    drush sql-cli --db-url=${MYSQL_URL} < ../$first_site_installed/mysqldump.sql -y
