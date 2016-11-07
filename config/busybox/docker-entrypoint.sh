@@ -27,10 +27,10 @@ if [ "${GIT_REPO}" != "" ]; then git_repo_exists=true; fi
 if [ "$drupal_already_configured" == "true" ] && [ ! "$git_repo_exists" ] && [ "$INSTALL_DRUPAL" != "true" ]; then move_along=true; fi
 if [ "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then pull_from_git=true; fi
 if [ ! "$drupal_files_exist" ] && [ "$git_repo_exists" ]; then clone_from_git=true; fi
-if [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then install_drupal_from_scratch=true; fi
+if [ ! "$drupal_files_exist" ] && [ ! "$git_repo_exists" ]; then install_drupal_from_scratch=true && move_along=true; fi
 
 #If there is already existing code and no git repo is defined, then exit out
-if [ "$move_along" ]; then echo "Code already exists, site is configured and nothing to update. All set here." && exit 0; fi
+if [ "$move_along" ]; then echo "All set here." && exit 0; fi
 
 # Clone or pull our repo from GIT, etc.
 source ${busyboxscripts}/git_commands.sh
