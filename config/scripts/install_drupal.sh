@@ -68,7 +68,7 @@ fi
 
 echo "Attempting to install the database."
 
-if [ -z $first-site-installed ]; 
+if [ -z $first_site_installed ]; 
 then
    if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} -y
    then
@@ -76,14 +76,14 @@ then
       echo "" && true
    else
       echo "Site successfully installed in sites/$dir"
-      first-site-installed=$dir
+      first_site_installed=$dir
    fi
 else
-   cd ../$first-site-installed && drush sql-dump --result-file=mysqldump.sql
+   cd ../$first_site_installed && drush sql-dump --result-file=mysqldump.sql
    drush sql-dump --result-file=mysqldump.sql
    drush sql-create --db-url=${MYSQL_URL} -y
    cd ../$dir && drush cc drush || true
-   drush sql-cli --db-url=${MYSQL_URL} < ../$first-site-installed/mysqldump.sql -y
+   drush sql-cli --db-url=${MYSQL_URL} < ../$first_site_installed/mysqldump.sql -y
 fi
 
 
