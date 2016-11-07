@@ -54,7 +54,6 @@ RUN mv /root/composer.phar /usr/local/bin/composer
 WORKDIR /root/.composer
 RUN composer global update
 WORKDIR /root
-RUN ln -s /root/.composer/vendor/bin/drush /usr/bin
 
 # Archive contents of the web root and stash it for later
 WORKDIR /var/www
