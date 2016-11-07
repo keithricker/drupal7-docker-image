@@ -22,10 +22,6 @@ rsync -a -u /var/www/codebase/ /host_app/code/ || true
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
-# If there is a private key defined in the env vars, then add it.
-bash ${drupalscripts}/copy_private_key.sh
-
-
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
