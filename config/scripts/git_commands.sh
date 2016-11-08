@@ -15,7 +15,7 @@ function grab_git_repo() {
        ((index++))
     done
     
-    if [ ! -d "${target}" ]; then mkdir -p ${target} && chown www-data:www-data ${target}; fi
+    if [ ! -d "${target}" ]; then mkdir -p ${target}; fi
     prev=$PWD && cd ${target}
     # clone the repo if it exists and we havent already downloaded drupal
     if [ "$clone_from_git" ]
