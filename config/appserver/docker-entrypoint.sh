@@ -19,7 +19,6 @@ if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
 fi
 
-bash /host_app/config/appserver/apache_start.sh
 source /host_app/config/appserver/install_memcached.sh
 chown -R www-data:www-data ${SITEROOT} || true
-true
+bash /host_app/config/appserver/apache_start.sh
