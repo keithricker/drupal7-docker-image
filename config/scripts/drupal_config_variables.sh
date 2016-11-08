@@ -1,6 +1,13 @@
 #!/bin/bash
 set -a
 
+# Copy all environment variables from linked containers to main
+"$(printenv)[@]"|while read line; do 
+   modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
+   statement="export $modline"
+   eval ${statement}
+done
+
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
 ROOT_USER_ID=${ROOT_USER_ID:-"1"}
 ROOT_GROUP_ID=${ROOT_GROUP_ID:-"0"}
