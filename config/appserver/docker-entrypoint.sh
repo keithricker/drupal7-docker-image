@@ -20,3 +20,4 @@ fi
 
 bash /host_app/config/appserver/apache_start.sh
 source /host_app/config/appserver/install_memcached.sh
+true
