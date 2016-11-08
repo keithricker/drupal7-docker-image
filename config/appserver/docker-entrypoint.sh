@@ -4,23 +4,23 @@ set -a
 echo "entering the start script ...."
 
 # Copy all environment variables from linked containers to main
-# "$(printenv)[@]"|while read line; do 
-#   modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
-#   statement="export $modline"
-#   eval ${statement}
-# done
+"$(printenv)[@]"|while read line; do 
+   modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
+   statement="export $modline"
+   eval ${statement}
+done
 
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
 
 if [ ! -d "/host_app/config/drupal" ]; then
-    if [ ! -d "/root/config" ]; then 
-        echo "Container is not configured properly. Missing configuration directory."
-        exit 0
-    fi
+   if [ ! -d "/root/config" ]; then 
+      echo "Container is not configured properly. Missing configuration directory."
+      exit 0
+   fi
 fi
 if [ -d "/root/config" ]; then    
-    rsync -a -u /root/config/ /host_app/config || true 
+   rsync -a -u /root/config/ /host_app/config || true 
 fi
 
 # Define a bunch of variables
@@ -28,7 +28,7 @@ drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
 if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
-    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
+   rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
 fi
 
 # create some directories and set permissions
@@ -37,9 +37,9 @@ for cooldir in "${bunchodirs[@]}";
 do
 if [ ! -d "$cooldir" ]
 then
-  mkdir -p $cooldir
-  chmod 775 $cooldir
-  chown -R www-data:www-data $cooldir
+   mkdir -p $cooldir
+   chmod 775 $cooldir
+   chown -R www-data:www-data $cooldir
 fi
 done
 
@@ -66,18 +66,18 @@ if [ "$move_along" ]; then echo "Code already exists, site is configured and not
 # If we're downloading drupal from scratch, then set our variables to specify the source and version.
 if [ "$install_drupal_from_scratch" ]
 then 
-    # If there is a tarred archive of our codebase, then unpack it.
-    if [ -f "${CODEBASEDIR}/codebase.tar.gz" ]
-    then 	
-        echo "Expanding codebase .... "
-        replace_codebase ${CODEBASEDIR}/codebase.tar.gz
-        drupal_files_exist=true;
-    else
-        echo "We need to download drupal from scratch ... "
-        git_repo_exists=true
-        clone_from_git=true
-        GIT_REPO="${DRUPAL_SOURCE}"
-        GIT_BRANCH="${DRUPAL_VERSION}"
+   # If there is a tarred archive of our codebase, then unpack it.
+   if [ -f "${CODEBASEDIR}/codebase.tar.gz" ]
+   then 	
+      echo "Expanding codebase .... "
+      replace_codebase ${CODEBASEDIR}/codebase.tar.gz
+      drupal_files_exist=true;
+   else
+      echo "We need to download drupal from scratch ... "
+      git_repo_exists=true
+      clone_from_git=true
+      GIT_REPO="${DRUPAL_SOURCE}"
+      GIT_BRANCH="${DRUPAL_VERSION}"
     fi
 fi
 
