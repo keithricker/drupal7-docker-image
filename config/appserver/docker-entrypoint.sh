@@ -3,12 +3,7 @@ set -a
 
 echo "entering the start script ...."
 
-# Copy all environment variables from linked containers to main
-"$(printenv)[@]"|while read line; do 
-   modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
-   statement="export $modline"
-   eval ${statement}
-done
+source /host_app/config/appserver/
 
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
@@ -22,3 +17,5 @@ fi
 if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
 fi
+
+source /host_app/config/scripts/drupal_config_variables.sh
