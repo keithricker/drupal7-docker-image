@@ -10,6 +10,6 @@ function replace_codebase {
         cd ${CODEBASEDIR} && tar -p -xz --strip-components=1 --keep-newer-files -f codebase.tar.gz
         rm codebase.tar.gz && cd ${SITEROOT}
     fi
-    rsync -a ${CODEBASEDIR}/ ${SITEROOT}/ || true && chown -R www-data:www-data ${SITEROOT} || true
+    rsync -a ${CODEBASEDIR}/ ${SITEROOT}/ || true
     rm -rf ${CODEBASEDIR:?}/* ${CODEBASEDIR}/.* || true;
 } 
