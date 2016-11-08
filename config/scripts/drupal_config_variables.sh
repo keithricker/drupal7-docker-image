@@ -2,6 +2,7 @@
 set -a
 
 # Copy all environment variables from linked containers to main
+function env_mangle {
 "$(printenv)[@]"|while read line; do
 if [[ $line == *"APPSERVER_"* ]]; then
    modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
@@ -9,6 +10,9 @@ if [[ $line == *"APPSERVER_"* ]]; then
    eval ${statement} || true
 fi
 done
+}
+
+env_mangle || true
 
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
 ROOT_USER_ID=${ROOT_USER_ID:-"1"}
