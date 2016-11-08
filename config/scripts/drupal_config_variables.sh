@@ -7,8 +7,8 @@ function env_mangle {
 if [[ $line == *"RUNNER_"* ]]; then
    modline=$(sed "s/RUNNER_ENV_//g" <<< $line | xargs)
    modline=$(sed "s/RUNNER_//g" <<< $modline | xargs)
-   modline=$(sed "s/APPSERVER_//g" <<< $modline | xargs)
    modline=$(sed "s/APPSERVER_ENV_//g" <<< $modline | xargs)
+   modline=$(sed "s/APPSERVER_//g" <<< $modline | xargs)   
    statement="export $modline"
    eval ${statement} || true
 fi
