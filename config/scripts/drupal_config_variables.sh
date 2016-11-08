@@ -15,8 +15,7 @@ OWNERSHIP="${ROOT_USER_ID}:${ROOT_GROUP_ID}"
 
 hostconfig=/host_app/config
 drupalscripts=/host_app/config/scripts
-drushscripts=/host_app/config/drush
-busyboxscripts=/host_app/config/busybox
+drushscripts=/host_app/config/drush-site-install
 
 drupalprofile=${DRUPAL_PROFILE:-minimal}
 drupalsitename=${HOSTNAME:-drupal7}
