@@ -46,6 +46,7 @@ source ${drupalscripts}/copy_private_key.sh
 
 # Clone or pull our repo from GIT, etc.
 source ${drupalscripts}/git_commands.sh
+source ${drupalscripts}/replace_codebase.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
 
 # create some directories and set permissions
