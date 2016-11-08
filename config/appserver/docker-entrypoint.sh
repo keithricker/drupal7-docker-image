@@ -3,7 +3,7 @@ set -a
 
 echo "entering the start script ...."
 
-source /host_app/config/appserver/
+source /host_app/config/scripts/drupal_config_variables.sh
 
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
@@ -18,4 +18,4 @@ if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
 fi
 
-source /host_app/config/scripts/drupal_config_variables.sh
+bash /host_app/config/appserver/apache_start.sh
