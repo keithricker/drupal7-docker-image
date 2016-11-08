@@ -5,7 +5,7 @@ set -a
 function env_mangle {
 "$(printenv)[@]"|while read line; do
 if [[ $line == *"APPSERVER_"* ]]; then
-   modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
+   modline=$(sed "s/APPSERVER_//g" <<< $line | xargs)
    statement="export $modline"
    eval ${statement} || true
 fi
