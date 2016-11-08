@@ -60,7 +60,10 @@ then
 fi
 done
 
-if [ "$OWNERSHIP" != "" ]; then chown -Rf ${OWNERSHIP} ${SITEROOT} || true; fi
+if [ "$ROOT_USER_ID" != "" ] && [ "$ROOT_GROUP_ID" != "" ]; then
+    echo "chowning the site root directory using owner and group: $OWNERSHIP"
+    chown -Rf ${OWNERSHIP} ${SITEROOT} || true; 
+fi
 
 if [ -d "/host_app/config" ] && [ -d "/root/config" ]; then
    rm /usr/local/bin/docker-entrypoint && ln -s /host_app/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
