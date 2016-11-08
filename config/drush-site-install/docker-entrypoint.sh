@@ -6,3 +6,5 @@ set -a
     statement="export $modline"
     eval ${statement}
 done
+
+source /host_app/config/drush-site-install/install_drupal.sh
