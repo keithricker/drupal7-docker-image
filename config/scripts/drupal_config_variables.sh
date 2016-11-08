@@ -2,10 +2,12 @@
 set -a
 
 # Copy all environment variables from linked containers to main
-"$(printenv)[@]"|while read line; do 
+"$(printenv)[@]"|while read line; do
+if [[ $line == *"APPSERVER_"* ]]; then
    modline=export $(sed "s/APPSERVER_//g" <<< $line) | xargs
    statement="export $modline"
-   eval ${statement}
+   eval ${statement} || true
+fi
 done
 
 # Define a bunch of variables we will use for configuring our site installation. Database credentials and so forth.
