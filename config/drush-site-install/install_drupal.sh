@@ -15,6 +15,7 @@ dir=${dir##*/}
 DRUPAL_DEFAULT_SETTINGS=${DRUPAL_SITE_DIR}/$dir/default.settings.php
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
+DRUPAL_LOCAL_SETTINGS_ORIGIN=${drupalscripts}/../appserver/local.settings.php
 
 echo "Checking for existing site configuration ... "
 # break out if site is configured already or we're in sites/all
@@ -59,8 +60,8 @@ then
    source ${drushscripts}/modify_settings_file_1.sh
 fi
 
-cp ${drupalscripts}/../local.settings.php local.settings.php && chown www-data:www-data local.settings.php
-if [ "$dir" != "default" ]; 
+cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} && chown www-data:www-data local.settings.php
+if [ "$dir" != "default" ];
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
     revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/'${dbname}'/"<<<"$(cat local.settings.php)")
