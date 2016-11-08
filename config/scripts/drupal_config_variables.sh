@@ -4,7 +4,7 @@ set -a
 # Copy all environment variables from linked containers to main
 function env_mangle {
 "$(printenv)[@]"|while read line; do
-if [[ $line == *"APPSERVER_"* ]]; then
+if [[ $line == *"RUNNER_"* ]]; then
    modline=$(sed "s/APPSERVER_//g" <<< $line | xargs)
    statement="export $modline"
    eval ${statement} || true
