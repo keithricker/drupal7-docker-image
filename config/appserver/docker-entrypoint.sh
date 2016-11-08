@@ -20,3 +20,4 @@ fi
 source /host_app/config/appserver/install_memcached.sh
 chown -R www-data:www-data ${SITEROOT} || true
 source /host_app/config/appserver/apache_start.sh
+tail -f /dev/null
