@@ -1,6 +1,6 @@
-# Standard Drupal 7 image
+# Minimal Busy Box inpsired container used to spin up a drupal project
 
-FROM drupal:7
+FROM kalabox/cli:stable
 
 WORKDIR /root
 
@@ -8,15 +8,11 @@ WORKDIR /root
 ENV SITEROOT /var/www/html
 
 # If git repo and/or branch are specified then we can use them for pulling/cloning codebase
-# ENV GIT_REPO
-ENV GIT_BRANCH master
+ENV GIT_REPO https://github.com/drupal/drupal.git
+ENV GIT_BRANCH 7.x
 # If project is under version control and user would like to create a new git branch from their code base,
 # then specify the name of the new branch to create.
 # ENV MAKE_GIT_BRANCH
-
-# Source for downloading fresh drupal sourcecode - this will be used by default.
-ENV DRUPAL_SOURCE https://github.com/drupal/drupal.git
-ENV DRUPAL_VERSION 7.x
 
 ENV IMPORT_EXTERNAL_DB false
 # For passing in private key with environment variable
@@ -40,28 +36,26 @@ RUN mkdir -p /host_app/config && chmod -R 777 /root/config /host_app
 ENV APACHE_LISTEN_PORT 80
 
 # Memcache Installation
-RUN apt-get update && apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential || true
-ENV PHP_EXT_DIR /usr/src/php/ext
-RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached &&\
-    docker-php-ext-install memcached
+#
+# RUN apt-get update && apt-get install -y memcached libmemcached-dev libmemcached11 git build-essential || true
+# ENV PHP_EXT_DIR /usr/src/php/ext
+# RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached &&\
+#    docker-php-ext-install memcached
+#
 
 # Install composer
-WORKDIR /root
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv /root/composer.phar /usr/local/bin/composer
-
-# Install Drush 7.
-WORKDIR /root/.composer
-RUN composer global update
-WORKDIR /root
+#
+# WORKDIR /root
+# RUN curl -sS https://getcomposer.org/installer | php
+# RUN mv /root/composer.phar /usr/local/bin/composer
+# WORKDIR /root/.composer
+# RUN composer global update
 
 # Archive contents of the web root and stash it for later
-WORKDIR /var/www
-RUN mkdir codebase && chown -R www-data:www-data codebase && rsync -a -u /var/www/html/ /var/www/codebase/ || true 
+RUN mkdir /var/www/codebase && chown -R www-data:www-data /var/www/codebase
 ENV CODEBASEDIR /var/www/codebase
 WORKDIR /var/www/html
 
-EXPOSE 8080 8088
-
+ENTRYPOINT bash
 RUN ln -s /root/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 CMD ["docker-entrypoint"]
