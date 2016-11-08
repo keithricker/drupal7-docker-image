@@ -13,7 +13,7 @@ echo "entering the start script ...."
 # Copy shared files from server container to docker host machine for sharing
 # Move anything newer from the container to the host, and delete anything in the existing config folder.
 
-if [ ! -d "/host_app/config/drupal" ]; then
+if [ ! -d "/host_app/config/appserver" ]; then
     if [ ! -d "/root/config" ]; then 
         echo "Container is not configured properly. Missing configuration directory."
         exit 0
@@ -22,26 +22,6 @@ fi
 if [ -d "/root/config" ]; then    
     rsync -a -u /root/config/ /host_app/config || true 
 fi
-
-# Define a bunch of variables
-drupalscripts=/host_app/config/scripts
-source ${drupalscripts}/drupal_config_variables.sh
-
-if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
-    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
-fi
-
-# create some directories and set permissions
-bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
-for cooldir in "${bunchodirs[@]}";
-do
-if [ ! -d "$cooldir" ]
-then
-  mkdir -p $cooldir
-  chmod 775 $cooldir
-  chown -R www-data:www-data $cooldir
-fi
-done
 
 # Include drupal variables
 source ${drupalscripts}/drupal_config_variables.sh
@@ -84,3 +64,29 @@ fi
 # Clone or pull our repo from GIT, etc.
 source ${busyboxscripts}/git_commands.sh
 grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -newbranch ${MAKE_GIT_BRANCH}
+
+# Define a bunch of variables
+drupalscripts=/host_app/config/scripts
+source ${drupalscripts}/drupal_config_variables.sh
+
+if [ ! -f "${SITEROOT}/index.php" ] && [ -f "${CODEBASEDIR}/index.php" ]; then
+    rsync -a -u ${CODEBASEDIR}/ ${SITEROOT}/ || true
+fi
+
+# create some directories and set permissions
+bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
+for cooldir in "${bunchodirs[@]}";
+do
+if [ ! -d "$cooldir" ]
+then
+  mkdir -p $cooldir
+  chmod 775 $cooldir
+  chown -R www-data:www-data $cooldir
+fi
+done
+
+if [ -d "/host_app/config" ] && [ -d "/root/config" ]; then
+   rm /usr/local/bin/docker-entrypoint && ln -s /host_app/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+   rm -rf /root/config
+fi
+true
