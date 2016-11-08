@@ -60,7 +60,7 @@ then
 fi
 done
 
-if [ "$OWNERSHIP" != "" ]; then chown -R -f ${OWNERSHP} ${SITEROOT} || true; fi
+if [ "$OWNERSHIP" != "" ]; then chown -Rf ${OWNERSHP} ${SITEROOT} || true; fi
 
 if [ -d "/host_app/config" ] && [ -d "/root/config" ]; then
    rm /usr/local/bin/docker-entrypoint && ln -s /host_app/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
