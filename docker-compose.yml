@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+# Drupal compose file
+#
+
+#
+# The app runner is a lightweight container that pulls all the buttons and brings it all together.
+#
+runner:
+    
+  image: kricker/drupal7-docker-image
+  
+  volumes:
+    $PWD/config:/host_app/config
+    $PWD/code:/var/www/html
+    - /var/lib/mysql
+    - /var/www/html
+    - /host_app
+    
+  environment:
+    ROOT_USER_ID: 1
+    ROOT_GROUP_ID: 0
+    OWNERSHIP: "1:0"
+    DEVELOPMENT_MODE: development
+    # GIT_USERNAME: 
+    # GIT_PASSWORD: 
+    # GIT_REPO: "the git repo where your code lives"
+    # GIT_BRANCH: "name of new branch to create"
+    # MAKE_GIT_BRANCH: "false"
+    # PRIVATE_KEY_FILE: root-aws-key.pem
+    # PRIVATE_KEY_CONTENTS:
+    # IMPORT_EXTERNAL_DB: "false"
+    # EXTERNAL_DB_SRC_USER:
+    # EXTERNAL_DB_SRC_IP:
+    # EXTERNAL_DB_SRC_SITEROOT:
+    # DRUPAL_PRODUCTION_URL: $KALABOX_APP_CONFIG_DRUPAL_PRODUCTION_URL
+    MYSQL_HOST: "database"
+    
+  entrypoint: bash
+  command: docker-entrypoint
+
+#
+# This defines a basic Drupal appserver.
+#
+
+appserver:
+
+  image: drupal:7
+  
+  volumes:
+    - $PWD/config/appserver/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint
+    
+  environment:
+    ROOT_USER_ID: 1
+    ROOT_GROUP_ID: 0
+    OWNERSHIP: "1:0"
+    DEVELOPMENT_MODE: development
+    MYSQL_HOST: "database"
+    APACHE_LISTEN_PORT: "80"
+    
+  volumes_from:
+    - runner
+  links:  
+    - db:database
+    - db:mysql
+  ports:
+    - "80"
+  command: docker-entrypoint
+
+#
+# This defines a basic database server.
+#
+db:
+
+  volumes_from:
+    - runner
+    
+  volumes:
+    - $KALABOX_APP_ROOT/config/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    
+  ports:
+    - "3306"
+    
+  environment:
+    MYSQL_USER: $KALABOX_APP_PHP_CONFIG_FRAMEWORK
+    MYSQL_PASSWORD: $KALABOX_APP_PHP_CONFIG_FRAMEWORK
+    MYSQL_ROOT_PASSWORD: $KALABOX_APP_PHP_CONFIG_FRAMEWORK
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    MYSQL_DATABASE: $KALABOX_APP_PHP_CONFIG_FRAMEWORK
+    
+drush-site-install:
+
+  image: drush/drush:8-php5
+  
+  volumes:
+    - $HOME:/user
+    - $PWD/config/drush-site-install/install_drupal.sh:/usr/local/bin/install_drupal.sh
+    - $PWD/config/drush-site-install/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint
+    
+  volumes_from:
+    - runner
+    
+  environment:
+    HOME: /home/$KALABOX_ENGINE_ID
+    MYSQL_HOST: database
+    TERM: xterm-color
+    HOSTNAME: $KALABOX_APP_HOSTNAME
+    KALABOX_UID: $KALABOX_ENGINE_ID
+    KALABOX_GID: $KALABOX_ENGINE_GID
+    FRAMEWORK: $KALABOX_APP_PHP_CONFIG_FRAMEWORK
+    INSTALL_DRUPAL: "true"
+    
+  links:
+    - db:database
+    - db:mysql
+    - appserver:appserver
+  working_dir: $KALABOX_CLI_WORKING_DIR
+  
+  entrypoint: bash
+  command: usermap || true && docker-entrypoint
+  
+  stdin_open: true
+  tty: true
