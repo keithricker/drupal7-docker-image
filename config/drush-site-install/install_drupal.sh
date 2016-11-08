@@ -3,7 +3,8 @@ set -a
 
 # Getting ready to install drupal. 
 # First need to include our variables
-source /host_app/config/scripts/drupal_config_variables.sh
+drupalscripts=/host_app/config/scripts
+source ${drupalscripts}/drupal_config_variables.sh
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
