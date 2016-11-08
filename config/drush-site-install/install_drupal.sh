@@ -60,7 +60,7 @@ then
    source ${drushscripts}/modify_settings_file_1.sh
 fi
 
-cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} && chown www-data:www-data local.settings.php
+cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} local.settings.php && chown www-data:www-data local.settings.php
 if [ "$dir" != "default" ];
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
