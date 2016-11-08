@@ -52,9 +52,8 @@ ENV APACHE_LISTEN_PORT 80
 # RUN composer global update
 
 # Archive contents of the web root and stash it for later
-RUN mkdir /var/www/codebase && chown -R www-data:www-data /var/www/codebase
+RUN mkdir -p /var/www/codebase
 ENV CODEBASEDIR /var/www/codebase
-WORKDIR /var/www/html
 
 ENTRYPOINT bash
 RUN ln -s /root/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
