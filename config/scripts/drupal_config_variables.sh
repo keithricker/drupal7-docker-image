@@ -5,7 +5,8 @@ set -a
 function env_mangle {
 "$(printenv)[@]"|while read line; do
 if [[ $line == *"RUNNER_"* ]]; then
-   modline=$(sed "s/RUNNER_//g" <<< $line | xargs)
+   modline=$(sed "s/RUNNER_ENV_//g" <<< $line | xargs)
+   modline=$(sed "s/RUNNER_//g" <<< $modline | xargs)
    statement="export $modline"
    eval ${statement} || true
 fi
