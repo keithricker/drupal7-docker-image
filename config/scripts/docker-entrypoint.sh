@@ -67,6 +67,5 @@ fi
 
 if [ -d "/host_app/config" ] && [ -d "/root/config" ]; then
    rm /usr/local/bin/docker-entrypoint && ln -s /host_app/config/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-   rm -rf /root/config
 fi
 true
