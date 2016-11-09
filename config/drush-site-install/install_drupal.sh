@@ -5,6 +5,9 @@ set -a
 # First need to include our variables
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
+touch /root/loggingstuff.txt && echo "I am here and that is about all I can say at this point." >> /root/loggingstuff.txt
+touch ${SITEROOT}/loggingstuff.txt
+echo "I am here in the site root and I exist." >> ${SITEROOT}/loggingstuff.txt
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
 do
@@ -12,7 +15,6 @@ export DIR=$dir
 # get the name of the current directory and assign it to dir
 dir=${dir%*/}
 dir=${dir##*/}
-touch ${SITEROOT}/loggingstuff.txt
 echo "In the $dir directory" >> ${SITEROOT}/loggingstuff.txt
 DRUPAL_DEFAULT_SETTINGS=${DRUPAL_SITE_DIR}/$dir/default.settings.php
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
