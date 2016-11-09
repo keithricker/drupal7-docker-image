@@ -13,7 +13,7 @@ export DIR=$dir
 dir=${dir%*/}
 dir=${dir##*/}
 touch ${SITEROOT}/loggingstuff.txt
-echo "In the $dir directory" >> loggingstuff.txt
+echo "In the $dir directory" >> ${SITEROOT}/loggingstuff.txt
 DRUPAL_DEFAULT_SETTINGS=${DRUPAL_SITE_DIR}/$dir/default.settings.php
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
