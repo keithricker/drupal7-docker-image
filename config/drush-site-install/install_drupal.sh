@@ -12,7 +12,8 @@ export DIR=$dir
 # get the name of the current directory and assign it to dir
 dir=${dir%*/}
 dir=${dir##*/}
-nohup echo "In the $dir directory"
+touch ${SITEROOT}/loggingstuff.txt
+echo "In the $dir directory" >> loggingstuff.txt
 DRUPAL_DEFAULT_SETTINGS=${DRUPAL_SITE_DIR}/$dir/default.settings.php
 DRUPAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/settings.php
 DRUPAL_LOCAL_SETTINGS=${DRUPAL_SITE_DIR}/$dir/local.settings.php
@@ -25,7 +26,7 @@ if [ "$dir" == "all" ]; then continue; fi;
 if [ -f "${DRUPAL_SITE_DIR}/$dir/local.settings.php" ]
 then
   echo "Drupal is already configured in ${DRUPAL_SITE_DIR}/$dir. Delete local.settings.php to rerun setup"
-  nohup echo "local settings file exists. Setting first_site_installed equal to $dir"
+  echo "local settings file exists. Setting first_site_installed equal to $dir" >> ${SITEROOT}/loggingstuff.txt
   first_site_installed=$dir
   continue
 fi
@@ -45,7 +46,7 @@ nuhup echo "setting mysql url to $MYSQL_URL"
 
 # If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
 cd ${DRUPAL_SITE_DIR}/$dir
-if drush pm-info node --fields=status; then nohup echo "site already installed here at $dir" && echo "Site is already installed here. Moving along." && continue; else true; fi
+if drush pm-info node --fields=status; then echo "site already installed here at $dir" >> ${SITEROOT}/loggingstuff.txt && echo "Site is already installed here. Moving along." && continue; else true; fi
 
 # Install the site
 #
@@ -75,22 +76,22 @@ echo "Attempting to install the database."
 
 if [ "$first_site_installed" == "" ]; 
 then
-   nohup echo "first site installed is $first_site_installed which is nothing"
+   echo "first site installed is $first_site_installed which is nothing" >> ${SITEROOT}/loggingstuff.txt
    if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --sites-subdir=$dir --db-url=${MYSQL_URL} -y
    then
       echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
       echo "" && true
    else
       echo "Site successfully installed in sites/$dir"
-      nohup echo "first site installed being set to $dir"
+      echo "first site installed being set to $dir" >> ${SITEROOT}/loggingstuff.txt
       export first_site_installed=$dir
    fi
 else
-   nohup echo "cding to $first_site_installed directory and sql-dumping"
+   echo "cding to $first_site_installed directory and sql-dumping" >> ${SITEROOT}/loggingstuff.txt
    cd ../${first_site_installed} && drush sql-dump --result-file=sites/${first_site_installed}/mysqldump.sql
    drush sql-create --db-url=${MYSQL_URL} -y
    cd ../$dir && drush cc drush || true
-   nohup echo "in the $dir directory and sql-cli importing from the $first_site_installed/mysqldump.sql file"
+   echo "in the $dir directory and sql-cli importing from the $first_site_installed/mysqldump.sql file" >> ${SITEROOT}/loggingstuff.txt
    drush sql-cli --db-url=${MYSQL_URL} < ../$first_site_installed/mysqldump.sql -y
 fi
 
