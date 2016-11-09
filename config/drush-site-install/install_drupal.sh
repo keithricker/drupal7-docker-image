@@ -24,6 +24,7 @@ if [ "$dir" == "all" ]; then continue; fi;
 if [ -f "${DRUPAL_SITE_DIR}/$dir/local.settings.php" ]
 then
   echo "Drupal is already configured in ${DRUPAL_SITE_DIR}/$dir. Delete local.settings.php to rerun setup"
+  first_site_installed=$dir
   continue
 fi
 if [ "${dir}" != "default" ]
