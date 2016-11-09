@@ -59,7 +59,7 @@ then
    source ${drushscripts}/modify_settings_file_1.sh
 fi
 
-cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} local.settings.php && chown www-data:www-data local.settings.php
+cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} local.settings.php
 if [ "$dir" != "default" ];
 then
     # Just replacing the environment variable for the database name with the name of the new database we're creating.
@@ -69,7 +69,7 @@ fi
 
 echo "Attempting to install the database."
 
-if [ -z $first_site_installed ]; 
+if [ "$first_site_installed" == "" ]; 
 then
    if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --sites-subdir=$dir --db-url=${MYSQL_URL} -y
    then
@@ -77,7 +77,7 @@ then
       echo "" && true
    else
       echo "Site successfully installed in sites/$dir"
-      first_site_installed=$dir
+      export first_site_installed=$dir
    fi
 else
    cd ../${first_site_installed} && drush sql-dump --result-file=sites/${first_site_installed}/mysqldump.sql
