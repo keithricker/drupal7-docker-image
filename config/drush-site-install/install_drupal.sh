@@ -38,7 +38,6 @@ else
 fi
 
 export MYSQL_URL="mysql://$dbuname:$dbpass@$dbhost:$dbport/$dbname"
-export MYSQL_ROOT_CREDS="--db-su=$dbuname --db-su-pw=$dbpass"
 
 # If we're establishing a connection and we have data, then we'll assume we're installed and we'll move along.
 cd ${DRUPAL_SITE_DIR}/$dir
@@ -72,7 +71,7 @@ echo "Attempting to install the database."
 
 if [ -z $first_site_installed ]; 
 then
-   if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass ${MYSQL_ROOT_CREDS} --sites-subdir=$dir --db-url=${MYSQL_URL} -y
+   if ! drush site-install minimal --site-name=${drupalsitename} --account-pass=$adminpass --sites-subdir=$dir --db-url=${MYSQL_URL} -y
    then
       echo "Unable to configure your Drupal installation at $DRUPAL_SITE_DIR/$dir"
       echo "" && true
@@ -81,7 +80,7 @@ then
       first_site_installed=$dir
    fi
 else
-   cd ../$first_site_installed && drush sql-dump --result-file=mysqldump.sql
+   cd ../${first_site_installed} && drush sql-dump --result-file=sites/${first_site_installed}/mysqldump.sql
    drush sql-create --db-url=${MYSQL_URL} -y
    cd ../$dir && drush cc drush || true
    drush sql-cli --db-url=${MYSQL_URL} < ../$first_site_installed/mysqldump.sql -y
