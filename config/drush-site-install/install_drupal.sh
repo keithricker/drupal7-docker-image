@@ -5,6 +5,7 @@ set -a
 # First need to include our variables
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
+if [ -f "/root/loggingstuff.txt" ]; then touch /root/anotherlogthing.txt; fi
 touch /root/loggingstuff.txt
 touch ${SITEROOT}/loggingstuff.txt
 echo "I am here in the site root and I exist." >> ${SITEROOT}/loggingstuff.txt
