@@ -6,8 +6,10 @@ set -a
 drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
-while [ ! -f "${DRUPAL_SITE_DIR}/default/settings.php" ]; do
-   sleep 5
+while : ; do
+    [[ -f "${DRUPAL_SITE_DIR}/default.settings.php" ]] && break
+    echo "Pausing until file exists."
+    sleep 5
 done
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
