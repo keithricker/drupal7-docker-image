@@ -7,7 +7,7 @@ drupalscripts=/host_app/config/scripts
 source ${drupalscripts}/drupal_config_variables.sh
 
 while [ ! -f ${SITEROOT}/sites/default/settings.php ]; do
-  sleep 5
+   sleep 5
 done
 
 for dir in ${DRUPAL_SITE_DIR}/*/;
