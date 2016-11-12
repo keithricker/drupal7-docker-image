@@ -93,12 +93,12 @@ fi
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
    echo "Attempting to import the database."
-   if [ ! -d "${hostconfig}/mysql/import/$dir" ]; then mkdir -p ${hostconfig}/mysql/import/$dir; fi
-   if [ ! -f "${hostconfig}/mysql/import/$dir/mysql-dump-file.sql" ]; then 
+   if [ ! -d "${hostconfig}/db/import/$dir" ]; then mkdir -p ${hostconfig}/db/import/$dir; fi
+   if [ ! -f "${hostconfig}/db/import/$dir/mysql-dump-file.sql" ]; then 
       source ${drushscripts}/fetch_external_db.sh
-      fetch_external_db ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql || true && chown -R www-data:www-data ${hostconfig}/mysql/import/$dir || true
+      fetch_external_db ${hostconfig}/db/import/$dir/mysql-dump-file.sql || true && chown -R www-data:www-data ${hostconfig}/db/import/$dir || true
    fi
-   if drush sql-cli < ${hostconfig}/mysql/import/$dir/mysql-dump-file.sql; 
+   if drush sql-cli < ${hostconfig}/db/import/$dir/mysql-dump-file.sql; 
    then 
       echo "Database import successful"
    else 
