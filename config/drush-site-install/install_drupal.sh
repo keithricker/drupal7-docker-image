@@ -92,17 +92,22 @@ fi
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
 if [ "${IMPORT_EXTERNAL_DB}" ]
 then
+   db_import_dir=${hostconfig}/db/import/$dir
+   db_import_file=${hostconfig}/db/import/$dir/mysql-dump-file.sql
+   
    echo "Attempting to import the database."
-   if [ ! -d "${hostconfig}/db/import/$dir" ]; then mkdir -p ${hostconfig}/db/import/$dir; fi
-   if [ ! -f "${hostconfig}/db/import/$dir/mysql-dump-file.sql" ]; then 
+   if [ ! -d "${db_import_dir}" ]; then mkdir -p ${db_import_dir}; fi
+   if [ ! -f "${db_import_file}" ]; then 
       source ${drushscripts}/fetch_external_db.sh
-      fetch_external_db ${hostconfig}/db/import/$dir/mysql-dump-file.sql || true && chown -R www-data:www-data ${hostconfig}/db/import/$dir || true
+      fetch_external_db ${db_import_file} || true && chown -R www-data:www-data ${db_import_dir} || true
    fi
-   if drush sql-cli < ${hostconfig}/db/import/$dir/mysql-dump-file.sql; 
-   then 
-      echo "Database import successful"
-   else 
-      echo "Database import unsuccessful. Most likely the result of my code sucking." && true
+   if [ -f "${db_import_file}" ]; then 
+      if drush sql-cli < ${db_import_file};
+      then 
+         echo "Database import successful"
+      else 
+         echo "Database import unsuccessful. Most likely the result of my code sucking." && true
+      fi
    fi
 fi
 
