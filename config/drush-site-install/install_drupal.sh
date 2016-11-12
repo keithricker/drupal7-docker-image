@@ -62,19 +62,8 @@ then
 fi
 
 cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} local.settings.php
-if [ "$dir" != "default" ];
-then
-    # Just replacing some variables in the settings.php files with hard values
-    revisedsettings=$(cat local.settings.php);
-    replaceme=(dbname dbuname dbpass dbhost dbport)
-    
-    for replacement in "${replaceme[@]}"; do
-       replaceval=$( eval 'echo $'${replacement} )
-       revisedsettings=$(sed "s/${replacement}/${replaceval}/"<<<"$revisedsettings")
-    done
-    
-    echo "$revisedsettings" > local.settings.php
-fi
+source ${drushscripts}/modify_settings_file_2.sh
+replace_settings_vars local.settings.php
 
 echo "Attempting to install the database."
 
