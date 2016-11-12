@@ -68,9 +68,9 @@ then
     revisedsettings=$(cat local.settings.php);
     replaceme=(dbname dbuname dbpass dbhost dbport)
     
-    for replacement in "${replaceme[@]}" do
-       replaceval=$( eval 'echo $'${replaceme} )
-       revisedsettings=$(sed "s/\$src\['${replacement}']/'${replaceval}'/"<<<"$revisedsettings")
+    for replacement in "${replaceme[@]}"; do
+       replaceval=$( eval 'echo $'${replacement} )
+       revisedsettings=$(sed "s/${replacement}/${replaceval}/"<<<"$revisedsettings")
     done
     
     echo "$revisedsettings" > local.settings.php
