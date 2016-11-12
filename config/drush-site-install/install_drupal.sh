@@ -102,7 +102,7 @@ then
    then 
       echo "Database import successful"
    else 
-      echo "Database import unseccessful. Most likely the result of my code sucking." && true
+      echo "Database import unsuccessful. Most likely the result of my code sucking." && true
    fi
 fi
 
