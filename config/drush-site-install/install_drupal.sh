@@ -64,8 +64,15 @@ fi
 cp ${DRUPAL_LOCAL_SETTINGS_ORIGIN} local.settings.php
 if [ "$dir" != "default" ];
 then
-    # Just replacing the environment variable for the database name with the name of the new database we're creating.
-    revisedsettings=$(sed "s/\$src\['MYSQL_ENV_MYSQL_DATABASE']/'${dbname}'/"<<<"$(cat local.settings.php)")
+    # Just replacing some variables in the settings.php files with hard values
+    revisedsettings=$(cat local.settings.php);
+    replaceme=(MYSQL_ENV_MYSQL_DATABASE MYSQL_ENV_MYSQL_USER MYSQL_ENV_MYSQL_PASSWORD MYSQL_PORT_3306_TCP_ADDR MYSQL_PORT_3306_TCP_PORT)
+    
+    for replacement in ${replaceme}; do
+       replaceval=$( eval 'echo $'${replaceme} )
+       revisedsettings=$(sed "s/\$src\['${replacement}']/'${replaceval}'/"<<<"$revisedsettings")
+    done
+    
     echo "$revisedsettings" > local.settings.php
 fi
 
