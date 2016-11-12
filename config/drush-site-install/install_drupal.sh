@@ -66,7 +66,7 @@ if [ "$dir" != "default" ];
 then
     # Just replacing some variables in the settings.php files with hard values
     revisedsettings=$(cat local.settings.php);
-    replaceme=(MYSQL_ENV_MYSQL_DATABASE MYSQL_ENV_MYSQL_USER MYSQL_ENV_MYSQL_PASSWORD MYSQL_PORT_3306_TCP_ADDR MYSQL_PORT_3306_TCP_PORT)
+    replaceme=(dbname dbuname dbpass dbhost dbport)
     
     for replacement in ${replaceme}; do
        replaceval=$( eval 'echo $'${replaceme} )
