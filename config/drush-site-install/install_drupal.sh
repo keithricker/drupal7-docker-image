@@ -102,8 +102,7 @@ then
       fetch_external_db ${db_import_file} || true && chown -R www-data:www-data ${db_import_dir} || true
    fi
    if [ -f "${db_import_file}" ]; then 
-      if drush sql-cli < ${db_import_file};
-      then 
+      if drush sql-cli < ${db_import_file}; then 
          echo "Database import successful"
       else 
          echo "Database import unsuccessful. Most likely the result of my code sucking." && true
