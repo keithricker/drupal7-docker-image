@@ -51,12 +51,10 @@ grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -ne
 
 # create some directories and set permissions
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
-for cooldir in "${bunchodirs[@]}";
-do
-if [ ! -d "$cooldir" ]
-then
-  mkdir -p $cooldir
-  chmod 775 $cooldir
+for cooldir in "${bunchodirs[@]}"; do
+if [ ! -d "$cooldir" ]; then
+   mkdir -p $cooldir
+   chmod 775 $cooldir
 fi
 done
 
