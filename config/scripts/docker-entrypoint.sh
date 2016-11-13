@@ -53,8 +53,8 @@ grab_git_repo -branch ${GIT_BRANCH} -repo ${GIT_REPO} -target ${CODEBASEDIR} -ne
 bunchodirs=( ${DRUPAL_TMP_DIR} ${DRUPAL_FILES_DIR} ${DRUPAL_PRIVATE_DIR} )
 for cooldir in "${bunchodirs[@]}"; do
 if [ ! -d "$cooldir" ]; then
-   mkdir -p $cooldir
-   chmod 775 $cooldir
+   mkdir -p $cooldir || true
+   chmod 775 $cooldir || true
 fi
 done
 
