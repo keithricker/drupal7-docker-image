@@ -109,6 +109,7 @@ fi
 # Install backup and migrate
 echo "Enabling backup and migrate module .... "
 drush en backup_migrate -y || true
+drush en admin_menu -y || true
 
 chmod u+w ${DRUPAL_SETTINGS} ${DRUPAL_LOCAL_SETTINGS}
 
