@@ -21,7 +21,7 @@ function grab_git_repo() {
     if [ "$clone_from_git" ]
     then
        echo "cloning from git ... "
-       rm -rf ${target:?}/* ${target}/.* || true && git clone -b ${branch} ${repo} .
+       rm -rf ${target:?}/* ${target}/.* || true && git clone -b ${branch} ${repo} . || true
     else
         # Otherwise if code exists, then we assume we are pulling instead.
         if [ "$pull_from_git" ]; then cd ${SITEROOT} && git pull || true; fi
@@ -33,6 +33,8 @@ function grab_git_repo() {
        git push origin ${newbranch} || true
     fi
     
-    if [ -f "${CODEBASEDIR}/index.php" ]; then replace_codebase || true; fi
+    if [ ! "$SITEROOT" -eq "$target" ] && [ -f "${target}/index.php" ]; then
+       replace_codebase || true; 
+    fi
     cd ${prev} || true
 }
