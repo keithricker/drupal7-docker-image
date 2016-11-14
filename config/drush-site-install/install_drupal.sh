@@ -86,8 +86,7 @@ fi
 
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
-if [ "${IMPORT_EXTERNAL_DB}" ]
-then
+if [ "${IMPORT_EXTERNAL_DB}" ] && [ "${DB_IMPORT_METHOD}" == "ssh" ]; then
    db_import_dir=${hostconfig}/db/import/$dir
    db_import_file=${hostconfig}/db/import/$dir/mysql-dump-file.sql
    
