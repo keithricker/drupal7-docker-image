@@ -15,6 +15,7 @@ ENV GIT_BRANCH 7.x
 # ENV MAKE_GIT_BRANCH
 
 ENV IMPORT_EXTERNAL_DB false
+ENV DB_IMPORT_METHOD ssh
 # For passing in private key with environment variable
 ENV PRIVATE_KEY_FILE root-aws-key.pem
 
