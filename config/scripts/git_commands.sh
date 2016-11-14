@@ -33,7 +33,7 @@ function grab_git_repo() {
        git push origin ${newbranch} || true
     fi
     
-    if [ ! "$SITEROOT" -eq "$target" ] && [ -f "${target}/index.php" ]; then
+    if [ "$SITEROOT" != "$target" ] && [ -f "${target}/index.php" ]; then
        replace_codebase || true; 
     fi
     cd ${prev} || true
