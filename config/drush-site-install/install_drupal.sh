@@ -86,15 +86,22 @@ fi
 
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
-if [ "${IMPORT_EXTERNAL_DB}" ] && [ "${DB_IMPORT_METHOD}" == "ssh" ]; then
+if [ "${IMPORT_EXTERNAL_DB}" ]; then
+
    db_import_dir=${hostconfig}/db/import/$dir
    db_import_file=${hostconfig}/db/import/$dir/mysql-dump-file.sql
+   casper_db_import_file=${hostconfig}/casper/db_backup.mysql.gz;
    
    echo "Attempting to import the database."
    if [ ! -d "${db_import_dir}" ]; then mkdir -p ${db_import_dir}; fi
-   if [ ! -f "${db_import_file}" ]; then 
-      source ${drushscripts}/fetch_external_db.sh
-      fetch_external_db ${db_import_file} || true && chown -R www-data:www-data ${db_import_dir} || true
+   if [ ! -f "${db_import_file}" ]; then
+      if [ "${DB_IMPORT_METHOD}" == "ssh" ]; then
+         source ${drushscripts}/fetch_external_db.sh
+         fetch_external_db ${db_import_file} || true && chown -R www-data:www-data ${db_import_dir} || true
+      fi
+      if [ "${DB_IMPORT_METHOD}" == "casper" ]; then
+         db_import_file="$casper_db_import_file";
+      fi
    fi
    if [ -f "${db_import_file}" ]; then 
       if drush sql-cli < ${db_import_file}; then 
@@ -103,6 +110,7 @@ if [ "${IMPORT_EXTERNAL_DB}" ] && [ "${DB_IMPORT_METHOD}" == "ssh" ]; then
          echo "Database import unsuccessful. Most likely the result of my code sucking." && true
       fi
    fi
+   
 fi
 
 # Install backup and migrate
