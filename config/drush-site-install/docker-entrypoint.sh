@@ -8,3 +8,4 @@ done
 
 sleep 60
 install_drupal
+exit
