@@ -5,4 +5,5 @@ sed -i "s/Listen 80\$/Listen ${APACHE_LISTEN_PORT}/g" /etc/apache2/ports.conf
 sed -i "s/VirtualHost \*:80>/VirtualHost \*:${APACHE_LISTEN_PORT}>/g" /etc/apache2/sites-available/default-ssl.conf
 sed -i "s/VirtualHost \*:80>/VirtualHost \*:${APACHE_LISTEN_PORT}>/g" /etc/apache2/sites-available/000-default.conf
 
+chmod 777 /usr/local/bin/apache2-foreground
 apache2-foreground || service apache2 start
