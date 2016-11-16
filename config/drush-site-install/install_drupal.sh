@@ -132,3 +132,5 @@ echo
 echo "Don't forget to change your drupal admin password!"
 echo ""
 done
+
+exit 0
