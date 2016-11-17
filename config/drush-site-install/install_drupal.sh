@@ -84,6 +84,10 @@ else
    drush sql-cli --db-url=${MYSQL_URL} < ../$first_site_installed/mysqldump.sql -y
 fi
 
+# Verifies that file is at least 1MB in size.
+function file_size {
+   wc -c <"$1" | xargs
+}
 
 # If we're importing an external database, then we'll attempt to connect to the external server and grab it.
 if [ "${IMPORT_EXTERNAL_DB}" ]; then
@@ -103,7 +107,7 @@ if [ "${IMPORT_EXTERNAL_DB}" ]; then
          db_import_file="$casper_db_import_file";
       fi
    fi
-   if [ -f "${db_import_file}" ]; then 
+   if [ -f "${db_import_file}" ] && [ "$(file_size ${db_import_file})" -gt 1000000 ]; then
       if drush sql-cli < ${db_import_file}; then 
          echo "Database import successful"
       else 
