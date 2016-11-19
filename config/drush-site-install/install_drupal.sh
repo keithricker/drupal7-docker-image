@@ -94,7 +94,7 @@ if [ "${IMPORT_EXTERNAL_DB}" ]; then
 
    db_import_dir=${hostconfig}/db/import/$dir
    db_import_file=${hostconfig}/db/import/$dir/mysql-dump-file.sql
-   casper_db_import_file=${hostconfig}/casper/db_backup.mysql.gz;
+   casper_db_import_file=${hostconfig}/casper/downloads/$dir/db_backup.mysql.gz;
    
    echo "Attempting to import the database."
    if [ ! -d "${db_import_dir}" ]; then mkdir -p ${db_import_dir}; fi
